@@ -4,7 +4,7 @@ package com.ztg.demo1.common.exception;
  * @Description: 通用错误码
  * 系统码(3位) + 等级码(1位) + 4位顺序号
  * 系统码 通用码 000；用户中心 100； 管理中心 200；
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/1 14:56
  */
 public enum CommonErrorCode implements ErrorCode {

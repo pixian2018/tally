@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @Description: 错误基础接口
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/9/10 11:01
  */
 public interface ErrorCode extends Serializable {

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @Description: List 工具类
- * @author: gaodm
+ * @author: zhoutg
  * @date: 2017/12/28 15:36
  * @version: V1.0
  */

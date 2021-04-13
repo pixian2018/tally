@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * @Description: http请求功能工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/3 17:45
  */
 public class HttpUtils {

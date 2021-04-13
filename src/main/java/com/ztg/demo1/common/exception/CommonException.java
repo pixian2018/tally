@@ -3,7 +3,7 @@ package com.ztg.demo1.common.exception;
 
 /**
  * @Description: 通用错误封装
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/1 14:56
  */
 public class CommonException extends RuntimeException {

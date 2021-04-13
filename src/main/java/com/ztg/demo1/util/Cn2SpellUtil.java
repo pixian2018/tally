@@ -7,7 +7,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 /**
  * @Description: 汉字转拼音
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/12/14 14:20
  */
 public class Cn2SpellUtil {

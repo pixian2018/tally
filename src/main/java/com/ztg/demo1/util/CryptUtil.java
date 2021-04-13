@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * @Description: 加解密工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2019/12/30 11:09
  */
 public class CryptUtil {

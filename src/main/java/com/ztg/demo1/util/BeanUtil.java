@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @Description: 对象转换工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/12/14 14:21
  */
 public class BeanUtil {

@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * @Description: 基于fastjson封装的json转换工具类 (大量数据用)
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/9/4 12:20
  */
 public class FastJsonUtils {

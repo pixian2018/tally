@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @Description: 字符串有关帮助类 封装了第三方帮助类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/6 11:15
  */
 public class StringUtil {

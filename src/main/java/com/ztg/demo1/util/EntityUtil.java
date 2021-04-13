@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * @Description: 实体对象工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/9/13 20:12
  */
 @Slf4j

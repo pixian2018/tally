@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * @Description: 基于com.google.code.gson封装的json转换工具类 (少量数据用)
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/9/4 11:48
  */
 public class GsonUtil {

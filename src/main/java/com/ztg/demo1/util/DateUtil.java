@@ -1,5 +1,7 @@
 package com.ztg.demo1.util;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,68 +9,105 @@ import java.util.Date;
 
 /**
  * @Description: 日期工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/6 11:17
  */
 public class DateUtil {
 
-    public static final long TEN_MINUTES = 10 * 60 * 1000;
-    public static final long ONE_DAY = 24 * 60 * 60 * 1000;
-
-    // Internal values for using in date/time calculations
-    public static final long MILLISECOND_OF_SECOND = 1000;
-    public static final long MILLISECOND_OF_MINUTE = MILLISECOND_OF_SECOND * 60;
-    public static final long MILLISECOND_OF_HOUR = MILLISECOND_OF_MINUTE * 60;
-    public static final long MILLISECOND_OF_DAY = MILLISECOND_OF_HOUR * 24;
-    public static final long MILLISECOND_OF_WEEK = MILLISECOND_OF_DAY * 7;
-
-    /**
-     * 日期格式：yyyy-MM-dd
-     */
+    // 一秒
+    public static final long ONE_SECOND = 1000;
+    // 一分钟
+    public static final long ONE_MINUTE = ONE_SECOND * 60;
+    // 一小时
+    public static final long ONE_HOUR = ONE_MINUTE * 60;
+    // 一天
+    public static final long ONE_DAY = ONE_HOUR * 24;
+    // 一星期
+    public static final long ONE_WEEK = ONE_DAY * 7;
+    // 日期格式：yyyy-MM-dd
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    /**
-     * 日期格式：yyyyMMdd
-     */
+    // 日期格式：yyyyMMdd
     public static final String DATE_FORMAT_NO_SPLIT = "yyyyMMdd";
-    /**
-     * 日期格式：yyyyMMddHHmmss
-     */
+    // 日期格式：yyyyMMddHHmmss
     public static final String DATE_TIME_FORMAT_NO_SPLIT = "yyyyMMddHHmmss";
-    /**
-     * 日期格式：yyyy-MM-dd HH:mm:ss
-     */
+    // 日期格式：yyyy-MM-dd HH:mm:ss
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    /**
-     * 日期格式：yyyy-MM-dd HH:mm:ss.SSS
-     */
+    // 日期格式：yyyy-MM-dd HH:mm:ss.SSS
     public static final String DATE_TIME_MS_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-
+    // 日期格式：HH:mm:ss
     public static final String FORMAT_TIME = "HH:mm:ss";
-
-    /**
-     * 精确到毫秒的完整时间    如：yyyy-MM-dd HH:mm:ss.S
-     */
+    // 精确到毫秒的完整时间：yyyy-MM-dd HH:mm:ss.S
     public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
-
-    /**
-     * 中文简写  如：2010年12月01日
-     */
+    // 中文简写  如：2010年12月01日
     public static String FORMAT_SHORT_CN = "yyyy年MM月dd";
-
-    /**
-     * 中文全称  如：2010年12月01日  23时15分06秒
-     */
+    // 中文全称  如：2010年12月01日  23时15分06秒
     public static String FORMAT_LONG_CN = "yyyy年MM月dd日  HH时mm分ss秒";
-
-    /**
-     * 中文全称精确到分钟  如：2010年12月01日  23时15分
-     */
+    // 中文全称精确到分钟  如：2010年12月01日  23时15分
     public static String FORMAT_LONG_CN_MI = "yyyy年MM月dd日  HH时mm分";
-
-    /**
-     * 精确到毫秒的完整中文时间
-     */
+    // 精确到毫秒的完整中文时间
     public static String FORMAT_FULL_CN = "yyyy年MM月dd日  HH时mm分ss秒SSS毫秒";
+    // 日期转换格式
+    public static String[] dateFormats = {
+            "yyyy年MM月dd日HH时mm分",
+            "yyyy年MM月dd日HH:mm",
+            "yyyy年MM月dd日H时mm分",
+            "yyyy年MM月dd日HH时m分",
+            "yyyy年MM月dd日H时m分",
+            "yyyy年M月dd日HH时mm分",
+            "yyyy年M月dd日H时mm分",
+            "yyyy年M月dd日HH时m分",
+            "yyyy年M月dd日H时m分",
+            "yyyy年MM月d日HH时mm分",
+            "yyyy年MM月d日H时mm分",
+            "yyyy年MM月d日HH时m分",
+            "yyyy年MM月d日H时m分",
+            "yyyy年M月d日HH时mm分",
+            "yyyy年M月d日H时mm分",
+            "yyyy年M月d日HH时m分",
+            "yyyy年M月d日H时m分",
+            "yyyy-MM-ddHH:mm:ss",
+            "yyyy-MM-ddHH:mm",
+            "yyyy-MM-ddHH:m",
+            "yyyy-MM-ddH:mm",
+            "yyyy-MM-ddH:m",
+            "yyyy-M-ddHH:mm",
+            "yyyy-M-ddHH:m",
+            "yyyy-M-ddH:mm",
+            "yyyy-M-ddH:m",
+            "yyyy-MM-dHH:mm",
+            "yyyy-MM-dHH:m",
+            "yyyy-MM-dH:mm",
+            "yyyy-MM-dH:m",
+            "yyyy-M-dHH:mm",
+            "yyyy-M-dHH:m",
+            "yyyy-M-dH:mm",
+            "yyyy-M-dH:m",
+            "yyyy-MM-dd",
+            "yyyy年MM月dd日H时",
+            "yyyy/MM/ddHH:mm:ss",
+            "yyyy/MM/ddHH:mm",
+            "yyyy/MM/ddHH:m",
+            "yyyy/MM/ddH:mm",
+            "yyyy/MM/ddH:m",
+            "yyyy/MM/ddHH:mm:",
+            "yyyy/M/ddHH:mm",
+            "yyyy/M/ddHH:m",
+            "yyyy/M/ddH:mm",
+            "yyyy/M/ddH:m",
+            "yyyy/MM/dHH:mm",
+            "yyyy/MM/dHH:m",
+            "yyyy/MM/dH:mm",
+            "yyyy/MM/dH:m",
+            "yyyy/M/dHH:mm",
+            "yyyy/M/dHH:m",
+            "yyyy/M/dH:mm",
+            "yyyy/M/dH:m",
+            "yyyy/MM/dd",
+            "yyyy.MM.dd",
+            "yyyy-MM-ddHH:mm:ss.000",
+            "yyyyMMddHH:mm",
+            "yyyy-MM-dd'T'HH:mm:ss",
+    };
 
 
     /**
@@ -113,11 +152,9 @@ public class DateUtil {
         if (date == null) {
             return "";
         }
-
         if (isEmpty(format)) {
             format = DATE_FORMAT;
         }
-
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
@@ -288,28 +325,6 @@ public class DateUtil {
         return format(new Date(), dateFormatPattern);
     }
 
-    public static Date getServerTime(String operateTimeStr) {
-        Date serverTime = new Date();
-        if (isEmpty(operateTimeStr)) {
-            return serverTime;
-        }
-
-        Date operateTime = parseDate(operateTimeStr, DATE_TIME_FORMAT);
-
-        if (operateTime == null) {
-            operateTime = parseDate(operateTimeStr, DATE_TIME_MS_FORMAT);
-        }
-
-        Long interval = operateTime.getTime() - serverTime.getTime();
-        if (operateTime.after(serverTime) && TEN_MINUTES < interval) {
-            return serverTime;
-        } else if (operateTime.before(serverTime) && ONE_DAY < Math.abs(interval)) {
-            return serverTime;
-        } else {
-            return operateTime;
-        }
-    }
-
     /**
      * 添加或减少月
      *
@@ -333,7 +348,7 @@ public class DateUtil {
      */
     public static Date addWeek(Date date, int weeks) {
         if (date != null) {
-            return new Date(date.getTime() + weeks * MILLISECOND_OF_WEEK);
+            return new Date(date.getTime() + weeks * ONE_WEEK);
         }
         return date;
     }
@@ -347,7 +362,7 @@ public class DateUtil {
      */
     public static Date addDay(Date date, int days) {
         if (date != null) {
-            return new Date(date.getTime() + days * MILLISECOND_OF_DAY);
+            return new Date(date.getTime() + days * ONE_DAY);
         }
         return date;
     }
@@ -361,7 +376,7 @@ public class DateUtil {
      */
     public static Date addHour(Date date, int hours) {
         if (date != null) {
-            return new Date(date.getTime() + hours * MILLISECOND_OF_HOUR);
+            return new Date(date.getTime() + hours * ONE_HOUR);
         }
         return date;
     }
@@ -375,7 +390,7 @@ public class DateUtil {
      */
     public static Date addMinutes(Date date, int minutes) {
         if (date != null) {
-            return new Date(date.getTime() + minutes * MILLISECOND_OF_MINUTE);
+            return new Date(date.getTime() + minutes * ONE_MINUTE);
         }
         return date;
     }
@@ -584,9 +599,11 @@ public class DateUtil {
      * @param date 日期
      * @return
      */
-    public static String getYear(Date date) {
-        SimpleDateFormat df = new SimpleDateFormat(FORMAT_FULL);
-        return df.format(date).substring(0, 4);
+    public static int getYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+
     }
 
     /**
@@ -650,35 +667,74 @@ public class DateUtil {
     }
 
     /**
-     * 功能描述：返回毫
+     * 功能描述：返回毫秒
      *
      * @param date 日期
-     * @return 返回毫
+     * @return 返回毫秒
      */
     public static long getMillis(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar.getTimeInMillis();
     }
-    
+
     /**
      * 计算2个日期相差多少年
+     *
      * @param fromDate
      * @param toDate
      * @return
      */
-    public static Integer yearCompare(Date fromDate,Date toDate){
-    	if(fromDate==null||toDate==null){
-    		return null;
-    	}
-    	Calendar  from  =  Calendar.getInstance();
+    public static Integer yearCompare(Date fromDate, Date toDate) {
+        if (fromDate == null || toDate == null) {
+            return null;
+        }
+        Calendar from = Calendar.getInstance();
         from.setTime(fromDate);
-        Calendar  to  =  Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
         to.setTime(toDate);
         int fromYear = from.get(Calendar.YEAR);
         int toYear = to.get(Calendar.YEAR);
-        int year = toYear  -  fromYear;
+        int year = toYear - fromYear;
         return year;
     }
-    
+
+
+    /**
+     * 解析时间,支持多条件格式【适配性好】
+     *
+     * @param datetime
+     * @return
+     */
+    public static Date parseDateCommon(String datetime) {
+        Date date = null;
+        try {
+            datetime = removeCtl(datetime);
+            if (StringUtil.isNotBlank(datetime)) {
+                date = DateUtils.parseDate(datetime, dateFormats);
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return date;
+    }
+
+    /**
+     * 删除字符串中的换行和控制字符
+     *
+     * @param str
+     */
+    public static String removeCtl(String str) {
+        String trim = "";
+        if (StringUtil.isNotEmpty(str)) {
+            trim = str.replaceAll("\r|\n|\r\n", "").trim();
+        }
+        return trim;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getMinute(new Date()));
+        System.out.println(getDay(new Date()));
+        System.out.println(getYear(new Date()));
+    }
 }

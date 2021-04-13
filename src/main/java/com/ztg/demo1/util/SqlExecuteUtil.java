@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * @Description: sql批量执行时，参数分组后按组提交，避免游标、数据量超过限制
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/4/20 11:27
  */
 public class SqlExecuteUtil {

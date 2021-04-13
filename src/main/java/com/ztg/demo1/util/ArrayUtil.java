@@ -4,7 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @Description: 数组工具类
- * @author: gaodm
+ * @author: zhoutg
  * @time: 2018/8/6 16:22
  */
 public class ArrayUtil {
