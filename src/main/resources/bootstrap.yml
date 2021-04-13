@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: demo1
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true

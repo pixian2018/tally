@@ -1,0 +1,25 @@
+server:
+  port: 8000
+  max-http-header-size: 10MB #head传值大小
+
+spring:
+  #配置rabbitMq 服务器
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+  #配置rabbitMq 自定义消息通道
+  cloud:
+    stream:
+      bindings:
+        inputMessage: # MyMessage类中的变量值
+          destination: message   # 等同于交换器
+        outputMessage:  # MyMessage类中的变量值
+          destination: message   # 等同于交换器
+
+
+# 是否开启swagger调用
+swagger:
+  enable: true
