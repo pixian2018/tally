@@ -109,7 +109,6 @@ public class DateUtil {
             "yyyy-MM-dd'T'HH:mm:ss",
     };
 
-
     /**
      * Adds or subtracts the specified amount of time to the given calendar field, based on the calendar's rules. For
      * example, to subtract 5 days from the current time of the calendar, you can achieve it by calling:
@@ -730,6 +729,41 @@ public class DateUtil {
             trim = str.replaceAll("\r|\n|\r\n", "").trim();
         }
         return trim;
+    }
+
+    /**
+     * 比较时间,以分钟为单位
+     * endDate比startDate多diff分钟则返回true
+     *
+     * @param startDate
+     * @param endDate
+     * @param diff
+     * @param hasEqual  是否包含“等号”
+     * @return
+     */
+    public static boolean compareTime(Date startDate, Date endDate, Long diff, boolean hasEqual) {
+        boolean flag = false;
+        if (startDate == null || endDate == null) {
+            return false;
+        }
+        Calendar calendar_s = Calendar.getInstance();
+        Calendar calendar_e = Calendar.getInstance();
+        Long time_s, time_e;
+        try {
+            calendar_s.setTime(startDate);
+            calendar_e.setTime(endDate);
+
+            time_s = calendar_s.getTimeInMillis();
+            time_e = calendar_e.getTimeInMillis();
+            if (hasEqual) {
+                return (time_e - time_s) >= diff * ONE_MINUTE;
+            } else {
+                return (time_e - time_s) > diff * ONE_MINUTE;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
     }
 
     public static void main(String[] args) {

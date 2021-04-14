@@ -13,7 +13,7 @@ import java.util.Map;
  * @author: zhoutg
  * @time: 2018/9/4 12:20
  */
-public class FastJsonUtils {
+public class FastJsonUtil {
 
     /**
      * 功能描述：把JSON数据转换成指定的java对象

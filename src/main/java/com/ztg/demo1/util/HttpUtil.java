@@ -14,7 +14,7 @@ import java.util.Map;
  * @author: zhoutg
  * @time: 2018/8/3 17:45
  */
-public class HttpUtils {
+public class HttpUtil {
 
     /**
      * 尝试获取当前请求的HttpServletRequest实例

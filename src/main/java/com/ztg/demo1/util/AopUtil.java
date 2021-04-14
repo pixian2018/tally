@@ -54,7 +54,7 @@
 //         Object[] args = joinPoint.getArgs();
 //         String params = "";
 //         for (Object o : args) {
-//             params += FastJsonUtils.getBeanToJson(o);
+//             params += FastJsonUtil.getBeanToJson(o);
 //         }
 //         if (!StringUtil.isEmpty(params)) {
 //             sysLog.setParams(params);
@@ -95,7 +95,7 @@
 //         Object[] args = joinPoint.getArgs();
 //         String params = "";
 //         for (Object o : args) {
-//             params += FastJsonUtils.getBeanToJson(o);
+//             params += FastJsonUtil.getBeanToJson(o);
 //             break;
 //         }
 //         if (!StringUtil.isEmpty(params)) {
@@ -132,7 +132,7 @@
 //         }
 //         //出参设置
 //         String result = "";
-//         result = FastJsonUtils.getBeanToJson(object);
+//         result = FastJsonUtil.getBeanToJson(object);
 //         if (!StringUtil.isEmpty(result)) {
 //             biRecord.setResult(result);
 //         }
@@ -157,7 +157,7 @@
 //         }
 //         //出参设置
 //         String result = "";
-//         result = FastJsonUtils.getBeanToJson(handleException((Exception) ex));
+//         result = FastJsonUtil.getBeanToJson(handleException((Exception) ex));
 //         biRecord.setResult(result);
 //         biRecord.setSuccessFlag(0);
 //         return biRecord;
@@ -188,9 +188,9 @@
 //             rs.code = respDTO.code;
 //             rs.msg = respDTO.msg;
 //             rs.data = new Object();
-//             result = FastJsonUtils.getBeanToJson(rs);
+//             result = FastJsonUtil.getBeanToJson(rs);
 //         } else {
-//             result = FastJsonUtils.getBeanToJson(object);
+//             result = FastJsonUtil.getBeanToJson(object);
 //         }
 //         if (!StringUtil.isEmpty(result)) {
 //             biRecord.setResult(result);
@@ -216,7 +216,7 @@
 //         }
 //         //出参设置
 //         String result = "";
-//         result = FastJsonUtils.getBeanToJson(handleException((Exception) ex));
+//         result = FastJsonUtil.getBeanToJson(handleException((Exception) ex));
 //         biRecord.setResult(result);
 //         biRecord.setSuccessFlag(0);
 //         return biRecord;
@@ -250,7 +250,7 @@
 //                     BeanUtil.copyProperties(baseBiVO, biRecord);
 //                 }
 //             }
-//             params += FastJsonUtils.getBeanToJson(o);
+//             params += FastJsonUtil.getBeanToJson(o);
 //         }
 //         if (!StringUtil.isEmpty(params)) {
 //             biRecord.setParams(params);
@@ -292,7 +292,7 @@
 //             for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
 //                 stringMap.put(fieldError.getField(), fieldError.getDefaultMessage());
 //             }
-//             String msg = FastJsonUtils.getBeanToJson(stringMap);
+//             String msg = FastJsonUtil.getBeanToJson(stringMap);
 //             resp.code = CommonErrorCode.PARAM_ERROR.getCode();
 //             resp.msg = msg;
 //             return resp;
@@ -303,7 +303,7 @@
 //             for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
 //                 stringMap.put(fieldError.getField(), fieldError.getDefaultMessage());
 //             }
-//             String msg = FastJsonUtils.getBeanToJson(stringMap);
+//             String msg = FastJsonUtil.getBeanToJson(stringMap);
 //             resp.code = CommonErrorCode.PARAM_ERROR.getCode();
 //             resp.msg = msg;
 //             return resp;
@@ -312,7 +312,7 @@
 //             MissingServletRequestParameterException ex = (MissingServletRequestParameterException) e;
 //             Map<String, String> stringMap = new HashMap<>();
 //             stringMap.put(ex.getParameterName(), "不能为null");
-//             String msg = FastJsonUtils.getBeanToJson(stringMap);
+//             String msg = FastJsonUtil.getBeanToJson(stringMap);
 //             resp.code = CommonErrorCode.PARAM_ERROR.getCode();
 //             resp.msg = msg;
 //             return resp;
