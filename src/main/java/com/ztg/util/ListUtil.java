@@ -1,7 +1,7 @@
 package com.ztg.util;
 
 import com.google.common.collect.Lists;
-import com.ztg.entity.Person;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -165,47 +165,6 @@ public class ListUtil {
     }
 
     public static void main(String[] args) {
-        List<Person> personList = Lists.newArrayList();
-        Person p = new Person();
-        p.setName("");
-        p.setAge(20);
-        personList.add(p);
-        Person p1 = new Person();
-        p1.setName("");
-        p1.setAge(21);
-        personList.add(p1);
 
-        List<Person> personList1 = Lists.newArrayList();
-        Person p3 = new Person();
-        p3.setName("张三");
-        p3.setAge(20);
-        personList1.add(p3);
-        Person p4 = new Person();
-        p4.setName("");
-        p4.setAge(20);
-        personList1.add(p4);
-        removeFilter(personList, personList1, "name");
-
-        List<Object> filterObj = personList1.stream().map(r -> ReflectUtil.getProperty(r, "name")).filter(Objects::nonNull).collect(Collectors.toList());
-        // List<String> s = Lists.newArrayList();
-        // s.add("张三");
-        // s.add("李四");
-        // System.out.println(1);
-        // for (Object obj : filterObj) {
-        //     System.out.println(obj);
-        // }
-
-        List<String> s1 = Lists.newArrayList();
-        s1.add("s1");
-        s1.add("s2");
-        s1.add("s3");
-        s1.add("s3");
-        removeRepeat(s1, "");
-
-        List<String> s2 = Lists.newArrayList();
-        s2.add("s1");
-        s2.add("s3");
-        removeFilter(s1, s2, "");
-        System.out.println(s1);
     }
 }

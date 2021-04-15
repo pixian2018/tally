@@ -196,10 +196,8 @@
     <logger name="org.apache.ibatis" level="DEBUG"/>
     <logger name="java.sql" level="DEBUG"/>
 
-    <!--  项目 mapper 路径
-            console控制台显示sql语句：STDOUT.filter.level -> debug级别
-    -->
-    <logger name="com.diagbot.mapper" level="DEBUG"/>
+    <!--  项目 mapper 路径,sql输出语句为debug级别 -->
+    <logger name="com.ztg.mapper" level="DEBUG"/>
 
     <!-- 本地环境下的日志配置 -->
     <springProfile name="local">

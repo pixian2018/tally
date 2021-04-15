@@ -45,7 +45,7 @@ public class SwaggerConfigurer {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ztg.demo1.controller")) // 扫描包路径
+                .apis(RequestHandlerSelectors.basePackage("com.ztg.controller")) // 扫描包路径
                 .paths(PathSelectors.any())
                 .build().globalOperationParameters(parameter());
         //.securitySchemes(newArrayList(oauth()))

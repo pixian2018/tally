@@ -3,7 +3,7 @@ package com.ztg;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {  })
 public class Demo1Application {
 
     public static void main(String[] args) {
