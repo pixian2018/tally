@@ -4,10 +4,14 @@ package com.ztg.controller;
 import com.google.common.collect.Lists;
 import com.ztg.common.RespDTO;
 import com.ztg.entity.KlZtg;
+import com.ztg.mapper.KlZtgMapper;
 import com.ztg.service.KlZtgService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +33,9 @@ public class KlZtgController {
     @Autowired
     @Qualifier("klZtgServiceImpl")
     KlZtgService klZtgService;
+
+    @Autowired
+    SqlSessionFactory sqlSessionFactory;
 
     @ApiOperation(value = "插入测试[zhoutg]",
             notes = "插入测试API")
@@ -52,5 +59,22 @@ public class KlZtgController {
         long t4 = System.currentTimeMillis();
         msg += (t4 - t3) / 1000.0;
         return RespDTO.onSuc(msg);
+    }
+
+    @ApiOperation(value = "testSqlSessionAPI[zhoutg]",
+            notes = "testSqlSessionAPI")
+    @PostMapping("/testSqlSession")
+    @Transactional
+    public String testSqlSession() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        SqlSession sqlSession1 = sqlSessionFactory.openSession();
+        KlZtgMapper klZtgMapper = sqlSession.getMapper(KlZtgMapper.class);
+        KlZtgMapper klZtgMapper1 = sqlSession1.getMapper(KlZtgMapper.class);
+
+        for (int i = 0; i < 5; i++) {
+
+            // System.out.println(klZtg.getId());
+        }
+        return "ok";
     }
 }
