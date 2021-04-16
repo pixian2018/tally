@@ -46,19 +46,45 @@ public class RespDTO<T> implements Serializable {
     }
 
     /**
-     * 远程调度错误处理
+     * 校验远程调度是否出错，不覆盖错误提示语
+     *
+     * @param respDTO 返回结果
+     * @param errmsg  错误信息
+     * @param <T>     泛型
+     */
+    public static <T> void verifyRpc(RespDTO<T> respDTO, String errmsg) {
+        respNGDeal(respDTO, false, errmsg);
+    }
+
+    /**
+     * 校验远程调度是否出错，覆盖错误提示语
+     *
+     * @param respDTO 返回结果
+     * @param errmsg  错误信息
+     * @param <T>     泛型
+     */
+    public static <T> void verifyRpcCover(RespDTO<T> respDTO, String errmsg) {
+        respNGDeal(respDTO, true, errmsg);
+    }
+
+    /**
+     * 校验远程调度是否出错内部方法
      *
      * @param respDTO
-     * @param errorMsg
+     * @param isCover
+     * @param errmsg
      * @param <T>
      */
-    private static <T> void rpcErrorMsg(RespDTO<T> respDTO, String errorMsg) {
-        if (!rpcIsSuccess(respDTO)) {
-            if (StringUtil.isBlank(errorMsg) && respDTO != null && StringUtil.isNotBlank(respDTO.msg)) {
-                throw new CommonException(CommonErrorCode.RPC_ERROR, respDTO.msg);
+    private static <T> void respNGDeal(RespDTO<T> respDTO, Boolean isCover, String errmsg) {
+        boolean flag = rpcIsSuccess(respDTO);
+        if (flag) {
+            if (!isCover) {
+                if (respDTO != null && StringUtil.isNotBlank(respDTO.msg)) {
+                    throw new CommonException(CommonErrorCode.RPC_ERROR, respDTO.msg);
+                }
             }
+            throw new CommonException(CommonErrorCode.RPC_ERROR, errmsg);
         }
-        throw new CommonException(CommonErrorCode.RPC_ERROR, errorMsg);
     }
 
     @Override
