@@ -239,7 +239,7 @@ public class RedisUtil {
      * @param unit    时间单位, 天:TimeUnit.DAYS 小时:TimeUnit.HOURS 分钟:TimeUnit.MINUTES
      *                秒:TimeUnit.SECONDS 毫秒:TimeUnit.MILLISECONDS
      */
-    public void setEx(String key, String value, long timeout, TimeUnit unit) {
+    public void setEx(String key, Object value, long timeout, TimeUnit unit) {
         redisTemplate.opsForValue().set(key, value, timeout, unit);
     }
 
