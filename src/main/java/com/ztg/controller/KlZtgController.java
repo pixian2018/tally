@@ -1,22 +1,28 @@
 package com.ztg.controller;
 
 
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.google.common.collect.Lists;
 import com.ztg.common.RespDTO;
 import com.ztg.entity.KlZtg;
-import com.ztg.mapper.KlZtgMapper;
 import com.ztg.service.KlZtgService;
+import com.ztg.util.ExcelUtils;
+import com.ztg.vo.ImportDiagnoseVO;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -61,20 +67,20 @@ public class KlZtgController {
         return RespDTO.onSuc(msg);
     }
 
-    @ApiOperation(value = "testSqlSessionAPI[zhoutg]",
-            notes = "testSqlSessionAPI")
-    @PostMapping("/testSqlSession")
-    @Transactional
-    public String testSqlSession() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        SqlSession sqlSession1 = sqlSessionFactory.openSession();
-        KlZtgMapper klZtgMapper = sqlSession.getMapper(KlZtgMapper.class);
-        KlZtgMapper klZtgMapper1 = sqlSession1.getMapper(KlZtgMapper.class);
+    @ApiOperation(value = "测试Excel[zhoutg]",
+            notes = "testExcel")
+    @PostMapping("/testExcel")
+    public RespDTO<String> testExcel(@RequestParam("file") MultipartFile file) {
+        ImportParams params = new ImportParams();
 
-        for (int i = 0; i < 5; i++) {
-
-            // System.out.println(klZtg.getId());
+        try {
+            Map<Integer, String> map = ExcelUtils.getSheetsKeyInt(file.getInputStream());
+            System.out.println(map);
+            ExcelImportResult<Object> objectExcelImportResult = ExcelImportUtil.importExcelMore(file.getInputStream(), ImportDiagnoseVO.class, params);
+            Workbook workbook = objectExcelImportResult.getWorkbook();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return "ok";
+        return RespDTO.onSuc("OK");
     }
 }

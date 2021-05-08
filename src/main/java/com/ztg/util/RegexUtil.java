@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * @author zhoutg
  * @Description: 正则匹配工具类
@@ -24,18 +25,45 @@ public class RegexUtil {
     }
 
     /**
-     * 是否有符合正则的数据(公共方法)
+     * 是否有符合正则的数据（大小写不敏感）
      *
      * @param content 文本内容
      * @param regex   表达式
      * @return
      */
     public static Boolean getRegexRes(String content, String regex) {
+        return getRegexResCommon(content, regex, false);
+    }
+
+    /**
+     * 是否有符合正则的数据（大小写敏感）
+     *
+     * @param content 文本内容
+     * @param regex   表达式
+     * @param senstive 大小写是否敏感
+     * @return
+     */
+    public static Boolean getRegexRes(String content, String regex, boolean senstive) {
+        if (senstive) {
+            return getRegexResCommon(content, regex, true);
+        }
+        return getRegexResCommon(content, regex, false);
+    }
+
+    /**
+     * 是否有符合正则的数据（内部方法）
+     *
+     * @param content 文本内容
+     * @param regex   表达式
+     * @return
+     */
+    private static Boolean getRegexResCommon(String content, String regex, Boolean sensitive) {
+        // 是否有符合的数据
         try {
             if (StringUtil.isBlank(content) || StringUtil.isBlank(regex)) {
                 return false;
             }
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Pattern pattern = getPattern(regex, sensitive);
             Matcher matcher = pattern.matcher(content);
             if (matcher.find()) {
                 return true;
@@ -47,7 +75,24 @@ public class RegexUtil {
     }
 
     /**
-     * 根据正则获取指定分组数据
+     * 获取pattern
+     *
+     * @param regex 正则表达式
+     * @param sensitive 大小写敏感
+     * @return
+     */
+    public static Pattern getPattern(String regex, Boolean sensitive) {
+        Pattern pattern = null;
+        if (sensitive) {
+            pattern = Pattern.compile(regex);
+        } else {
+            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        }
+        return pattern;
+    }
+
+    /**
+     * 根据正则获取指定分组数据（大小写不敏感）
      *
      * @param content  文本内容
      * @param regex    表达式
@@ -55,11 +100,39 @@ public class RegexUtil {
      * @return
      */
     public static String getRegexData(String content, String regex, Integer groupNum) {
+        return getRegexDataCommon(content, regex, groupNum, false);
+    }
+
+    /**
+     * 根据正则获取指定分组数据（大小写敏感）
+     *
+     * @param content  文本内容
+     * @param regex    表达式
+     * @param groupNum 获取第几个内容
+     * @return
+     */
+    public static String getRegexData(String content, String regex, Integer groupNum, Boolean sensitive) {
+        if (sensitive) {
+            return getRegexDataCommon(content, regex, groupNum, true);
+        }
+        return getRegexDataCommon(content, regex, groupNum, false);
+    }
+
+    /**
+     * 根据正则获取指定分组数据（公共方法）
+     *
+     * @param content  文本内容
+     * @param regex    表达式
+     * @param groupNum 获取第几个内容
+     * @return
+     */
+    private static String getRegexDataCommon(String content, String regex, Integer groupNum, Boolean sensitive) {
+        // 获取符合的数据
         try {
             if (StringUtil.isBlank(content)) {
                 return "";
             }
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Pattern pattern = getPattern(regex, sensitive);
             Matcher matcher = pattern.matcher(content);
             if (matcher.find() && matcher.groupCount() >= groupNum) {
                 return matcher.group(groupNum);
@@ -73,19 +146,44 @@ public class RegexUtil {
     }
 
     /**
-     * 根据正则获取指定所有分组数据
+     * 根据正则获取所有分组数据（大小写不敏感）
      *
      * @param content
      * @param regex
      * @return
      */
-    public static List<String> getRegexData(String content, String regex) {
+    private static List<String> getRegexData(String content, String regex) {
+        return getRegexDataCommon(content, regex, false);
+    }
+
+    /**
+     * 根据正则获取所有分组数据（大小写敏感）
+     *
+     * @param content
+     * @param regex
+     * @return
+     */
+    private static List<String> getRegexData(String content, String regex, Boolean sensitive) {
+        if (sensitive) {
+            getRegexDataCommon(content, regex, true);
+        }
+        return getRegexDataCommon(content, regex, false);
+    }
+
+    /**
+     * 根据正则获取所有分组数据（内部方法）
+     *
+     * @param content
+     * @param regex
+     * @return
+     */
+    private static List<String> getRegexDataCommon(String content, String regex, Boolean sensitive) {
         List<String> list = Lists.newArrayList();
         try {
             if (StringUtil.isBlank(content)) {
                 return list;
             }
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Pattern pattern = getPattern(regex, sensitive);
             Matcher matcher = pattern.matcher(content);
             if (matcher.find()) {
                 for (int i = 1; i <= matcher.groupCount(); i++) {
@@ -99,62 +197,6 @@ public class RegexUtil {
     }
 
     /**
-     * 验证邮箱
-     *
-     * @param email
-     * @return
-     */
-    public static boolean checkEmail(String email) {
-        boolean flag = false;
-        try {
-            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-            Pattern regex = Pattern.compile(check);
-            Matcher matcher = regex.matcher(email);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            flag = false;
-        }
-        return flag;
-    }
-
-    /**
-     * 验证手机号码
-     *
-     * @param mobileNumber 手机号码
-     * @return
-     */
-    public static boolean checkMobileNumber(String mobileNumber) {
-        boolean flag = false;
-        try {
-            Pattern regex = Pattern.compile("^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8})|(0\\d{2}-\\d{8})|(0\\d{3}-\\d{7})$");
-            Matcher matcher = regex.matcher(mobileNumber);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            flag = false;
-        }
-        return flag;
-    }
-
-    /**
-     * 验证密码
-     * 密码必须数字和字母组成，并且要同时含有数字和字母，且长度要在6-16位之间
-     *
-     * @param password 密码
-     * @return
-     */
-    public static boolean checkPassWord(String password) {
-        boolean flag = false;
-        try {
-            Pattern regex = Pattern.compile("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W_]{6,16}$");
-            Matcher matcher = regex.matcher(password);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            flag = false;
-        }
-        return flag;
-    }
-
-    /**
      * 测试
      *
      * @param args
@@ -163,5 +205,8 @@ public class RegexUtil {
         String regex1 = "(血小板计数)\\s*(\\d+(\\.\\d+)?)";
         // System.out.println(getRegexData("血小板计数  30.3", regex1, 2));
         System.out.println(getRegexData("血小板计数  30.3", regex1));
+
+        String s1 = "ABC";
+        System.out.println(getRegexRes(s1, "Abc", true));
     }
 }
