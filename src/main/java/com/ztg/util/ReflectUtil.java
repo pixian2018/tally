@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @description: 反射工具类
  * @author: zhoutg
- * @time: 2021/4/13 11:35
+ * @date: 2021/4/27 13:29
  */
 public class ReflectUtil {
 
@@ -98,6 +98,27 @@ public class ReflectUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 对象赋值
+     *
+     * @param object
+     * @param property
+     * @param value
+     */
+    public static void setFieldValue(Object object, String property, Object value){
+        //根据 对象和属性名通过反射 调用上面的方法获取 Field对象
+        Field field = getDeclaredField(object, property) ;
+        //抑制Java对其的检查
+        field.setAccessible(true) ;
+        try {
+            field.set(object, value);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
