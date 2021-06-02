@@ -265,6 +265,10 @@ public class ExcelBigUtil {
                 if (thisStr == null || "".equals(isCellNull)) {
                     isCellNull = true;// 设置单元格是否为空值
                 }
+                // trim()
+                if (thisStr != null) {
+                    thisStr = thisStr.trim();
+                }
                 record[thisColumn] = thisStr;
                 // Update column
                 if (thisColumn > -1) {
