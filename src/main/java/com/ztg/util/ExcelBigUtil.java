@@ -556,7 +556,7 @@ public class ExcelBigUtil {
                     if (StringUtil.isNotBlank(property)) {
                         Object value = convertValue(row[i], convertType);
                         if (value != null) {
-                            ReflectUtil.setFieldValue(obj, property, value);
+                            ReflectUtil.setProperty(obj, property, value);
                         }
                     }
                 }
