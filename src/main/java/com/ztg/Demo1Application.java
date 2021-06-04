@@ -1,11 +1,9 @@
 package com.ztg;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.ztg.mapper")
 public class Demo1Application {
 
     public static void main(String[] args) {
