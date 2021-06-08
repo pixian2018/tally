@@ -1,6 +1,5 @@
 package com.ztg.util;
 
-
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
@@ -9,6 +8,7 @@ import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import com.ztg.common.exception.CommonErrorCode;
 import com.ztg.common.exception.CommonException;
+import com.ztg.dto.ExportTestDTO;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -18,12 +18,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +42,10 @@ import java.util.NoSuchElementException;
  * @time: 2020/6/2 19:18
  */
 public class ExcelUtils {
+
+    // styleMap中包含的属性名
+    public static final String DATA_HEIGHT = "DATA_HEIGHT";// 数据行高例如：6
+    public static final String EX_STYLE = "EX_STYLE";// 类样式例如：com.ztg.util.ExcelExportStyler
 
     /**
      * 获取sheet信息，以<Sheet名称，序号>形式返回
@@ -113,88 +115,124 @@ public class ExcelUtils {
         return workbook;
     }
 
-    public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName,
-                                   boolean isCreateHeader, HttpServletResponse response) {
+    /**
+     * 导出生成workbook
+     *
+     * @param list
+     * @param title
+     * @param sheetName
+     * @param pojoClass
+     * @param fileName
+     * @param styleMap
+     * @return
+     */
+    public static Workbook generateWorkBook(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName,
+                                            Map<String, String> styleMap) {
         ExportParams exportParams = new ExportParams(title, sheetName);
-        exportParams.setCreateHeadRows(isCreateHeader);
-        defaultExport(list, pojoClass, fileName, response, exportParams);
+        setExportParams(exportParams, styleMap);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
+        return workbook;
     }
 
-    public static void exportExcelDynamicCol(List<ExcelExportEntity> entityList, Collection<?> dataSet, String title, String sheetName, String fileName,
-                                             HttpServletResponse response) {
-        ExportParams exportParams = new ExportParams(title, sheetName);
-        dynamicColExport(entityList, dataSet, fileName, response, exportParams);
-    }
-
-    public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName,
-                                   HttpServletResponse response, float height) {
-        Boolean havTitle = false;
-        if (StringUtil.isNotBlank(title)) {
-            havTitle = true;
+    /**
+     * 设置样式
+     *
+     * @param exportParams 参数
+     * @param styleMap     自定义样式
+     */
+    private static void setExportParams(ExportParams exportParams, Map<String, String> styleMap) {
+        if (exportParams == null || styleMap == null) {
+            return;
         }
-        userExport2(list, pojoClass, fileName, response, new ExportParams(title, sheetName), height, havTitle);
+        try {
+            // 设置数据行高
+            String dataHeight = styleMap.get(DATA_HEIGHT);
+            if (dataHeight != null) {
+                exportParams.setHeight(Short.valueOf(dataHeight));
+            }
+            // 设置样式
+            if (styleMap.get(EX_STYLE) != null) {
+                exportParams.setStyle(Class.forName(styleMap.get(EX_STYLE)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName,
-                                   HttpServletResponse response) {
-        defaultExport(list, pojoClass, fileName, response, new ExportParams(title, sheetName));
+    /**
+     * 获取导出file文件
+     *
+     * @param path
+     * @return
+     */
+    public static File getFile(String path) {
+        if (StringUtil.isBlank(path)) {
+            return null;
+        }
+        File file = new File(path);
+        int index = path.lastIndexOf(".");
+        String name = path.substring(0, index);
+        String suffix = path.substring(index);
+        int i = 1;
+        String num = "";
+        while (file.exists()) {
+            num = "(" + i++ + ")";
+            file = new File(name + num + suffix);
+        }
+        return file;
+    }
+
+    /**
+     * 自定义导出，可设置行高
+     *
+     * @param list      数据
+     * @param title     大标题
+     * @param sheetName 表单名
+     * @param pojoClass 注解类
+     * @param fileName  文件名
+     * @param response  输出
+     * @param styleMap  自定义样式
+     */
+    public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName, String sheetName, String title,
+                                   Map<String, String> styleMap, HttpServletResponse response) {
+        Workbook workbook = generateWorkBook(list, title, sheetName, pojoClass, fileName, styleMap);
+        downLoadExcel(fileName, response, workbook);
+    }
+
+    /**
+     * 自定义导出，可设置行高
+     *
+     * @param list      数据
+     * @param title     大标题
+     * @param sheetName 表单名
+     * @param pojoClass 注解类
+     * @param fileName  文件名
+     * @param styleMap  自定义样式
+     * @param path      路径
+     */
+    public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName, String sheetName, String title,
+                                   Map<String, String> styleMap, String path) {
+        try {
+            Workbook workbook = generateWorkBook(list, title, sheetName, pojoClass, fileName, styleMap);
+            File file = getFile(path);
+            FileOutputStream exportXls = new FileOutputStream(getFile(path));
+            workbook.write(exportXls);
+            exportXls.close();
+            workbook.close();
+            System.out.println("导出成功!" + file.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void exportExcel(List<Map<String, Object>> list, String fileName, HttpServletResponse response) {
         defaultExport(list, fileName, response);
     }
 
-    private static void defaultExport(List<?> list, Class<?> pojoClass, String fileName, HttpServletResponse response,
-                                      ExportParams exportParams) {
-        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
+    private static void defaultExport(List<Map<String, Object>> list, String fileName, HttpServletResponse response) {
+        Workbook workbook = ExcelExportUtil.exportExcel(list, ExcelType.HSSF);
         if (workbook != null) {
             ;
-        }
-        downLoadExcel(fileName, response, workbook);
-    }
-
-    private static void dynamicColExport(List<ExcelExportEntity> entityList, Collection<?> dataSet, String fileName, HttpServletResponse response,
-                                         ExportParams exportParams) {
-        Workbook workbook = ExcelExportUtil.exportExcel(exportParams,entityList,dataSet);
-        if (workbook != null) {
-            ;
-        }
-        downLoadExcel(fileName, response, workbook);
-    }
-
-    private static void userExport(List<?> list, Class<?> pojoClass, String fileName, HttpServletResponse response,
-                                   ExportParams exportParams) {
-        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
-        if (workbook != null) {
-            Sheet sheet = workbook.getSheetAt(0);
-            //列宽设置
-            sheet.setColumnWidth(8, 256 * 20);
-            sheet.setColumnWidth(9, 256 * 50);
-            int rowNum = sheet.getLastRowNum();
-            Row row = sheet.getRow(0);
-            for (int i = 1; i <= rowNum; i++) {
-                row = sheet.getRow(i);
-                row.setHeightInPoints(12.8f);
-            }
-        }
-        downLoadExcel(fileName, response, workbook);
-    }
-
-    private static void userExport2(List<?> list, Class<?> pojoClass, String fileName, HttpServletResponse response,
-                                    ExportParams exportParams, float height, Boolean havTitle) {
-        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
-        if (workbook != null) {
-            Sheet sheet = workbook.getSheetAt(0);
-            int rowNum = sheet.getLastRowNum();
-            Row row = sheet.getRow(0);
-            int startRowNum = 1;
-            if (havTitle) {
-                startRowNum = 2;
-            }
-            for (int i = startRowNum; i <= rowNum; i++) {
-                row = sheet.getRow(i);
-                row.setHeightInPoints(height);
-            }
         }
         downLoadExcel(fileName, response, workbook);
     }
@@ -211,12 +249,39 @@ public class ExcelUtils {
         }
     }
 
-    private static void defaultExport(List<Map<String, Object>> list, String fileName, HttpServletResponse response) {
-        Workbook workbook = ExcelExportUtil.exportExcel(list, ExcelType.HSSF);
+    /**
+     * 创建多表单表格内容
+     *
+     * @param sheetName
+     * @param title
+     * @param clazz
+     * @param data
+     * @param styleMap
+     * @return
+     */
+    public static Map<String, Object> createOneSheet(String sheetName, String title, Class<?> clazz, List<?> data, Map<String, String> styleMap) {
+        ExportParams exportParams = new ExportParams(title, sheetName, ExcelType.HSSF);
+        setExportParams(exportParams, styleMap);
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", exportParams);
+        map.put("entity", clazz);
+        map.put("data", data);
+        return map;
+    }
+
+    private static void dynamicColExport(List<ExcelExportEntity> entityList, Collection<?> dataSet, String fileName, HttpServletResponse response,
+                                         ExportParams exportParams) {
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, entityList, dataSet);
         if (workbook != null) {
             ;
         }
         downLoadExcel(fileName, response, workbook);
+    }
+
+    public static void exportExcelDynamicCol(List<ExcelExportEntity> entityList, Collection<?> dataSet, String title, String sheetName, String fileName,
+                                             HttpServletResponse response) {
+        ExportParams exportParams = new ExportParams(title, sheetName);
+        dynamicColExport(entityList, dataSet, fileName, response, exportParams);
     }
 
     public static <T> List<T> importExcel(String filePath, Integer titleRows, Integer headerRows, Class<T> pojoClass) {
@@ -263,7 +328,7 @@ public class ExcelUtils {
     }
 
     public static <T> List<T> importExcelMultiSheets(MultipartFile file, Integer titleRows, Integer headerRows, int sheetIndex,
-                                          Class<T> pojoClass) {
+                                                     Class<T> pojoClass) {
         if (file == null) {
             return null;
         }
@@ -284,7 +349,6 @@ public class ExcelUtils {
         }
         return list;
     }
-
 
 
     /**
@@ -328,13 +392,13 @@ public class ExcelUtils {
          */
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet(sheetName);
-//        HSSFSheet sheet = wb.
+        //        HSSFSheet sheet = wb.
         sheet.setDefaultColumnWidth(7);
-        sheet.setColumnWidth(0,5 * 256);
-        sheet.setColumnWidth(1,40 * 256);
-        sheet.setColumnWidth(3,20 * 256);
-        sheet.setColumnWidth(7,50 * 256);
-        sheet.setColumnWidth(8,10 * 256);
+        sheet.setColumnWidth(0, 5 * 256);
+        sheet.setColumnWidth(1, 40 * 256);
+        sheet.setColumnWidth(3, 20 * 256);
+        sheet.setColumnWidth(7, 50 * 256);
+        sheet.setColumnWidth(8, 10 * 256);
 
         // 生成一个样式
         HSSFCellStyle style = wb.createCellStyle();
@@ -343,14 +407,14 @@ public class ExcelUtils {
          合并第一行单元格标题
         */
         HSSFRow row;
-//        HSSFRow row = sheet.createRow(0);
+        //        HSSFRow row = sheet.createRow(0);
         HSSFCell cell;
-//        cell = row.createCell(0);
-//        cell.setCellValue("学生基本信息表");
-//        cell.setCellStyle(style);
+        //        cell = row.createCell(0);
+        //        cell.setCellValue("学生基本信息表");
+        //        cell.setCellStyle(style);
         //CellRangeAddress(int firstRow, int lastRow, int firstCol, int lastCol)
-//        CellRangeAddress cellra = new CellRangeAddress(0,0,0,headersNameMap.size()-1);
-//        wb.getSheet(sheetName).addMergedRegion(cellra);
+        //        CellRangeAddress cellra = new CellRangeAddress(0,0,0,headersNameMap.size()-1);
+        //        wb.getSheet(sheetName).addMergedRegion(cellra);
 
         //创建列标题栏所在行
         row = sheet.createRow(0);
@@ -395,14 +459,14 @@ public class ExcelUtils {
         Iterator<Map<String, Object>> labIt = dtoList.iterator();//总记录的迭代器
         int dtoRow = 2;//内容栏  导出数据dtoList的行序号
         while (labIt.hasNext()) {//记录的迭代器，遍历总记录
-//            row = sheet.createRow(dtoRow);
-//            dtoRow++;
-//            T l = (T) labIt.next();
+            //            row = sheet.createRow(dtoRow);
+            //            dtoRow++;
+            //            T l = (T) labIt.next();
             // 利用反射，根据javabean属性的先后顺序，动态调用getXxx()方法得到属性值
-//            Field[] fields = l.getClass().getDeclaredFields();//获得JavaBean全部属性
+            //            Field[] fields = l.getClass().getDeclaredFields();//获得JavaBean全部属性
             Map<String, Object> ln = labIt.next();
-            dtoRow = Integer.parseInt(ln.get("idnum").toString())-1;
-            if (dtoRow>1) {
+            dtoRow = Integer.parseInt(ln.get("idnum").toString()) - 1;
+            if (dtoRow > 1) {
                 row = sheet.createRow(dtoRow);
                 int zdCell = 0;
                 for (String field : ln.keySet()) {
@@ -459,7 +523,7 @@ public class ExcelUtils {
                 }//while
             }//for
             */
-//            break;
+            //            break;
         }
 
         //行列分组
@@ -477,4 +541,24 @@ public class ExcelUtils {
             e.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+        try {
+            String path = "E://测试导出.xls";
+            List<ExportTestDTO> exportTestDTOS = new ArrayList<>();
+            ExportTestDTO exportTestDTO = new ExportTestDTO();
+            exportTestDTO.setName("测试姓名");
+            exportTestDTO.setAddr("测试地址");
+            exportTestDTOS.add(exportTestDTO);
+            Map<String, String> styleMap = new LinkedMap<>();
+            styleMap.put(DATA_HEIGHT, "20");
+            styleMap.put(EX_STYLE, "com.ztg.util.ExcelExportStyler");
+            exportExcel(exportTestDTOS, ExportTestDTO.class, null, null, null,
+                    styleMap, path);
+        } catch (Exception e) {
+            System.out.println("导出失败!");
+            e.printStackTrace();
+        }
+    }
 }
+
