@@ -27,7 +27,7 @@ public class CodeGeneration {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        // gc.setOutputDir("E://code//demo1");
+        // gc.setOutputDir("E://code//tally");
         gc.setOutputDir(System.getProperty("user.dir") + "/src/main/java");
         gc.setFileOverride(true);
         gc.setActiveRecord(false);// 不需要ActiveRecord特性的请改为false

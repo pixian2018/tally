@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- 项目名称 -->
-    <property name="APPDIR" value="demo1"/>
+    <property name="APPDIR" value="tally"/>
     <!--定义日志文件的存储地址,可以相对路径，也可以是绝对路径-->
     <property name="LOG_PATH" value="/logs"/>
 

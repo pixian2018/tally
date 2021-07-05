@@ -57,7 +57,7 @@ public class SwaggerConfigurer {
                 .title("测试服务 api ")
                 .description("测试服务")
                 .termsOfServiceUrl("")
-                .contact(new Contact("demo1","",""))
+                .contact(new Contact("tally","",""))
                 .version("1.0")
                 .build();
     }

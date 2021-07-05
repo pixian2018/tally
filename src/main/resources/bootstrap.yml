@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo1
+    name: tally
   profiles:
     active: local
   main:

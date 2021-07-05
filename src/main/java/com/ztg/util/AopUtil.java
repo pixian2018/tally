@@ -1,4 +1,4 @@
-// package com.ztg.demo1.util;
+// package com.ztg.tally.util;
 //
 // import com.diagbot.annotation.BiLogger;
 // import com.diagbot.annotation.BiLoggerResult;
