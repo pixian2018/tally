@@ -49,15 +49,15 @@ public class CodeGeneration {
         dsc.setDbType(DbType.MYSQL);
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("lantone");
-        dsc.setUrl("jdbc:mysql://192.168.2.236:3306/med_2021?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8");
+        dsc.setPassword("root");
+        dsc.setUrl("jdbc:mysql://192.168.3.115:3306/wx?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8");
         mpg.setDataSource(dsc);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         // strategy.setTablePrefix(new String[] { "demo_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[] { "kl_ztg"}); // 需要生成的表
+        strategy.setInclude(new String[] { "record", "record_detail", "record_player"}); // 需要生成的表
 
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
