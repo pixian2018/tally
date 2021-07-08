@@ -1,7 +1,10 @@
 package com.ztg.service;
 
-import com.ztg.entity.Record;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ztg.dto.RecordDTO;
+import com.ztg.entity.Record;
+import com.ztg.vo.RecordPageVO;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RecordService extends IService<Record> {
 
+    public IPage<RecordDTO> getPage(RecordPageVO recordPageVO);
 }
