@@ -2,7 +2,6 @@ package com.ztg.controller;
 
 
 import com.ztg.common.RespDTO;
-import com.ztg.facade.RDetailFacade;
 import com.ztg.facade.RecordFacade;
 import com.ztg.vo.RecordVO;
 import io.swagger.annotations.Api;
@@ -10,7 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,14 +27,12 @@ public class RecordController {
 
     @Autowired
     RecordFacade recordFacade;
-    @Autowired
-    RDetailFacade rDetailFacade;
 
     @ApiOperation(value = "保存记录API[zhoutg]",
             notes = "保存记录API")
     @PostMapping("/save")
-    public RespDTO<Boolean> saveEntity(RecordVO recordVO) {
-        recordFacade.saveEntity(recordVO);
+    public RespDTO<Boolean> save(RecordVO recordVO) {
+        recordFacade.save(recordVO);
         return RespDTO.onSuc(true);
     }
 
