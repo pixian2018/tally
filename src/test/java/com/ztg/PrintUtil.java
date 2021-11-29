@@ -85,7 +85,7 @@ public class PrintUtil {
     }
 
     public static void main(String[] args) {
-        String path = "D:\\diagbot\\diagbotcloud\\cdssman-service\\src\\main\\java\\com\\diagbot\\vo\\klSymptomVO.java";
+        String path = "E:\\projectTest\\tally\\src\\main\\java\\com\\ztg\\vo\\RecordPlayerSaveVO.java";
         print(path);
     }
 }

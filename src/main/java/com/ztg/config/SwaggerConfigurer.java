@@ -11,7 +11,8 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnProperty(prefix = "swagger", value = { "enable" }, havingValue = "true")
-@EnableSwagger2
+@EnableSwagger2WebMvc
 public class SwaggerConfigurer {
     /**
      * 全局参数
@@ -45,7 +46,7 @@ public class SwaggerConfigurer {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ztg.controller")) // 扫描包路径
+                .apis(RequestHandlerSelectors.basePackage("com.ztg.web")) // 扫描包路径
                 .paths(PathSelectors.any())
                 .build().globalOperationParameters(parameter());
         //.securitySchemes(newArrayList(oauth()))
@@ -54,8 +55,8 @@ public class SwaggerConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("测试服务 api ")
-                .description("测试服务")
+                .title("记账服务 api ")
+                .description("记账服务")
                 .termsOfServiceUrl("")
                 .contact(new Contact("tally","",""))
                 .version("1.0")

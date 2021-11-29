@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author zhoutg
- * @since 2021-07-05
+ * @since 2021-11-29
  */
 public interface RecordPlayerMapper extends BaseMapper<RecordPlayer> {
 

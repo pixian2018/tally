@@ -1,8 +1,6 @@
-package com.ztg.dto;
+package com.ztg.vo;
 
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * <p>
@@ -13,7 +11,7 @@ import java.util.Date;
  * @since 2021-07-05
  */
 @Data
-public class RecordDTO {
+public class RecordSaveVO {
 
     /**
      * 主键
@@ -21,14 +19,9 @@ public class RecordDTO {
     private Long id;
 
     /**
-     * 记录创建时间
+     * 用户
      */
-    private Date gmtCreate;
-
-    /**
-     * 创建人
-     */
-    private String creator;
+    private String user;
 
     /**
      * 场次名称

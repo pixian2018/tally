@@ -1,10 +1,15 @@
 package com.ztg.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.annotation.PostConstruct;
+
 /**
  * @Description: MybatisPlus配置类
  * @author: zhoutg
@@ -16,17 +21,31 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class MybatisPlusConfigurer {
 
     /**
-     * mybatis-plus分页插件<br>
-     * 文档：http://mp.baomidou.com<br>
+     * 分页插件,一缓和二缓遵循mybatis的规则
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        // 设置请求的页面大于最大页后操作,true调回到首页,false继续请求,默认false
-        //paginationInterceptor.setOverflow(false);
-        // 设置最大单页限制数量,默认500条,-1不受限制
-        paginationInterceptor.setLimit(-1L);
-        return paginationInterceptor;
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+        // 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false
+        // paginationInnerInterceptor.setOverflow(false);
+        // 设置最大单页限制数量，默认 500 条，-1 不受限制
+        // paginationInnerInterceptor.setMaxLimit(500L);
+        interceptor.addInnerInterceptor(paginationInnerInterceptor);
+        return interceptor;
+    }
+
+    // @Bean
+    // public MybatisLikeSqlInterceptor mybatisSqlInterceptor() {
+    //     return new MybatisLikeSqlInterceptor();
+    // }
+
+    /*
+     * 解决druid 日志报错：discard long time none received connection:xxx
+     * */
+    @PostConstruct
+    public void setProperties(){
+        System.setProperty("druid.mysql.usePingMethod","false");
     }
 
 }

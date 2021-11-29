@@ -2,8 +2,6 @@ package com.ztg.vo;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * <p>
  * 场次名称表
@@ -13,8 +11,10 @@ import java.util.List;
  * @since 2021-07-05
  */
 @Data
-public class RecordDeleteVO {
+public class RecordGetVO {
 
-    // id列表
-    private List<Long> idList;
+    /**
+     * 主键
+     */
+    private Long id;
 }

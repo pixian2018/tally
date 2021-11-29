@@ -1,10 +1,12 @@
 package com.ztg.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,9 +16,11 @@ import java.util.Date;
  * </p>
  *
  * @author zhoutg
- * @since 2021-07-05
+ * @since 2021-11-29
  */
-@Data
+@Getter
+@Setter
+@TableName("record")
 public class Record implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,20 +34,38 @@ public class Record implements Serializable {
     /**
      * 是否删除,N:未删除，Y:删除
      */
+    @TableField("is_deleted")
     private String isDeleted;
 
     /**
      * 记录创建时间
      */
+    @TableField("gmt_create")
     private Date gmtCreate;
 
     /**
-     * 创建人
+     * 记录修改时间,如果时间是1970年则表示纪录未修改
      */
+    @TableField("gmt_modified")
+    private Date gmtModified;
+
+    /**
+     * 创建人，0表示无创建人值
+     */
+    @TableField("creator")
     private String creator;
+
+    /**
+     * 修改人,如果为0则表示纪录未修改
+     */
+    @TableField("modifier")
+    private String modifier;
 
     /**
      * 场次名称
      */
+    @TableField("name")
     private String name;
+
+
 }

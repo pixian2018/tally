@@ -12,7 +12,7 @@ import com.ztg.vo.RecordPageVO;
  * </p>
  *
  * @author zhoutg
- * @since 2021-07-05
+ * @since 2021-11-29
  */
 public interface RecordService extends IService<Record> {
 

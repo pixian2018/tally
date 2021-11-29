@@ -1,7 +1,10 @@
 package com.ztg.mapper;
 
-import com.ztg.entity.RecordDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ztg.dto.RecordDetailDTO;
+import com.ztg.entity.RecordDetail;
+import com.ztg.vo.RecordDetailPageVO;
 
 /**
  * <p>
@@ -9,8 +12,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author zhoutg
- * @since 2021-07-05
+ * @since 2021-11-29
  */
 public interface RecordDetailMapper extends BaseMapper<RecordDetail> {
 
+    public IPage<RecordDetailDTO> getPage(RecordDetailPageVO recordDetailPageVO);
 }
