@@ -51,7 +51,6 @@ public class RecordPlayerController {
         return RespDTO.onSuc(data);
     }
 
-
     @ApiOperation(value = "删除API[zhoutg]",
             notes = "删除API")
     @PostMapping("/delete")
