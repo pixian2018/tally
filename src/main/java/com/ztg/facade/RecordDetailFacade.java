@@ -18,6 +18,7 @@ import com.ztg.vo.RecordDetailGetVO;
 import com.ztg.vo.RecordDetailPageVO;
 import com.ztg.vo.RecordDetailSaveVO;
 import com.ztg.vo.RecordDetailVO;
+import com.ztg.vo.RecordSettleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -125,6 +126,20 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
                 .eq(RecordDetail::getRecordId, recordDetailDelVO.getRecordId())
                 .eq(RecordDetail::getGroupNo, recordDetailDelVO.getGroupNo())
         );
+    }
+
+    /**
+     * 结账
+     *
+     * @param recordSettleVO
+     */
+    public Boolean settle(RecordSettleVO recordSettleVO) {
+        List<RecordDetail> detailList = this.list(new QueryWrapper<RecordDetail>().lambda()
+                .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordDetail::getRecordId, recordSettleVO.getRecordId())
+        );
+
+        return null;
     }
 
 }

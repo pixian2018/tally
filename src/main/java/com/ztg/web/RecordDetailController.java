@@ -10,6 +10,7 @@ import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
 import com.ztg.vo.RecordDetailPageVO;
 import com.ztg.vo.RecordDetailSaveVO;
+import com.ztg.vo.RecordSettleVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,13 @@ public class RecordDetailController {
     public RespDTO<Boolean> delete(@RequestBody RecordDetailDelVO recordDetailDelVO) {
         Boolean data = recordDetailFacade.delete(recordDetailDelVO);
         return RespDTO.onSuc(data);
+    }
+
+    @ApiOperation(value = "结账API[zhoutg]",
+            notes = "API")
+    @PostMapping("/settle")
+    public RespDTO<Boolean> settle(@RequestBody RecordSettleVO recordSettleVO) {
+        // Boolean data = recordDetailFacade.delete(recordDetailDelVO);
+        return RespDTO.onSuc(null);
     }
 }
