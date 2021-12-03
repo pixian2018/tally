@@ -22,10 +22,21 @@
     </sql>
 
     <select id="getPage" resultType="com.ztg.dto.RecordDetailGroupDTO">
-        select gmt_modified, group_no, record_id from record_detail where is_deleted = 'N'
-        and record_id = #{recordId}
-        group by group_no
-        order by gmt_create desc
+        select * from (
+        SELECT
+            gmt_modified,
+            group_no,
+            record_id
+        FROM
+            record_detail
+        WHERE
+            is_deleted = 'N'
+        AND record_id = #{recordId}
+        GROUP BY
+            group_no,
+            record_id,
+            gmt_modified) t
+        order by t.gmt_modified desc
     </select>
 
     <select id="getByRecordAndGroup" resultType="com.ztg.dto.RecordDetailDTO">

@@ -51,6 +51,23 @@ public class RecordPlayerController {
         return RespDTO.onSuc(data);
     }
 
+    @ApiOperation(value = "获取参与人员列表API[zhoutg]",
+            notes = "recordId：场次id")
+    @PostMapping("/getJoinList")
+    public RespDTO<List<RecordPlayer>> getJoinList(@RequestBody RecordPlayerGetVO recordPlayerGetVO) {
+        List<RecordPlayer> data = recordPlayerFacade.getJoinList(recordPlayerGetVO);
+        return RespDTO.onSuc(data);
+    }
+
+    @ApiOperation(value = "获取参与人员数量API[zhoutg]",
+            notes = "recordId：场次id")
+    @PostMapping("/getJoinCount")
+    public RespDTO<Long> getJoinCount(@RequestBody RecordPlayerGetVO recordPlayerGetVO) {
+        Long data = recordPlayerFacade.getJoinCount(recordPlayerGetVO);
+        return RespDTO.onSuc(data);
+    }
+
+
     @ApiOperation(value = "删除API[zhoutg]",
             notes = "删除API")
     @PostMapping("/delete")

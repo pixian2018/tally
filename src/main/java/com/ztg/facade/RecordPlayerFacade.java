@@ -85,6 +85,36 @@ public class RecordPlayerFacade extends RecordPlayerServiceImpl {
     }
 
     /**
+     * 获取参与人员列表
+     *
+     * @param recordPlayerGetVO
+     * @return
+     */
+    public List<RecordPlayer> getJoinList(RecordPlayerGetVO recordPlayerGetVO) {
+        return this.list(new QueryWrapper<RecordPlayer>().lambda()
+                .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordPlayer::getRecordId, recordPlayerGetVO.getRecordId())
+                .eq(RecordPlayer::getIsJoin, 1)
+                .orderByAsc(RecordPlayer::getOrderNo)
+        );
+    }
+
+    /**
+     * 获取参与人员数量
+     *
+     * @param recordPlayerGetVO
+     * @return
+     */
+    public Long getJoinCount(RecordPlayerGetVO recordPlayerGetVO) {
+        return this.count(new QueryWrapper<RecordPlayer>().lambda()
+                .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordPlayer::getRecordId, recordPlayerGetVO.getRecordId())
+                .eq(RecordPlayer::getIsJoin, 1)
+        );
+    }
+
+
+    /**
      * 删除
      *
      * @param recordPlayerDeleteVO

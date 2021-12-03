@@ -22,8 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -49,12 +52,19 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
     public Boolean saveOrUpdate(RecordDetailSaveVO recordDetailSaveVO) {
         Date now = DateUtil.now();
         String user = recordDetailSaveVO.getUser();
+        List<RecordDetailVO> recordDetailListVO = recordDetailSaveVO.getRecordDetailList();
+        Map<Long, BigDecimal> moneyMap = recordDetailListVO.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getMoney(), (r1, r2) -> r2));
         if (recordDetailSaveVO.getGroupNo() != null) { // 编辑只修改金额，不修改其他
-
-        } else { // TODO
-
-        }
-        if (recordDetailSaveVO.getGroupNo() == null) {
+            List<RecordDetail> list = this.list(new QueryWrapper<RecordDetail>().lambda()
+                    .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
+                    .eq(RecordDetail::getRecordId, recordDetailSaveVO.getRecordId())
+                    .eq(RecordDetail::getGroupNo, recordDetailSaveVO.getGroupNo())
+            );
+            for (RecordDetail recordDetail : list) {
+                recordDetail.setMoney(moneyMap.get(recordDetail.getId()));
+            }
+            return recordDetailService.saveOrUpdateBatch(list);
+        } else { // 新增
             RecordDetail one = this.getOne(new QueryWrapper<RecordDetail>().lambda()
                     .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
                     .eq(RecordDetail::getRecordId, recordDetailSaveVO.getRecordId())
@@ -79,7 +89,6 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
             }
             return recordDetailService.saveBatch(recordDetailList);
         }
-        return false;
     }
 
     /**
@@ -91,7 +100,6 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
     public List<RecordDetailDTO> getByRecordAndGroupFac(RecordDetailGetVO recordDetailGetVO) {
         return this.getByRecordAndGroup(recordDetailGetVO);
     }
-
 
     /**
      * 分页
