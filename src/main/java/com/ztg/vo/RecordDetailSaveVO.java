@@ -17,6 +17,8 @@ public class RecordDetailSaveVO {
 
     // 场次
     private Long recordId;
+    // 分组
+    private Integer groupNo;
     // 用户
     private String user;
     // 明细

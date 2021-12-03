@@ -21,9 +21,30 @@
         id, is_deleted, gmt_create, gmt_modified, creator, modifier, record_id, player_id, money
     </sql>
 
-    <select id="getPage" resultType="com.ztg.dto.RecordDetailDTO">
-        select * from record_detail where is_deleted = 'N'
+    <select id="getPage" resultType="com.ztg.dto.RecordDetailGroupDTO">
+        select gmt_modified, group_no, record_id from record_detail where is_deleted = 'N'
         and record_id = #{recordId}
+        group by group_no
         order by gmt_create desc
     </select>
+
+    <select id="getByRecordAndGroup" resultType="com.ztg.dto.RecordDetailDTO">
+        SELECT
+            b.`name`,
+            a.money,
+            a.player_id,
+            a.id
+        FROM
+            record_detail a,
+            record_player b
+        WHERE
+            a.is_deleted = 'N'
+          AND b.is_deleted = 'N'
+          AND a.player_id = b.id
+          AND a.record_id = #{recordId}
+          AND a.group_no = #{groupNo}
+        ORDER BY
+            a.id ASC
+    </select>
+
 </mapper>

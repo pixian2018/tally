@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.ztg.common.exception.CommonErrorCode;
 import com.ztg.common.exception.CommonException;
 import com.ztg.dto.RecordDetailDTO;
+import com.ztg.dto.RecordDetailGroupDTO;
 import com.ztg.entity.RecordDetail;
 import com.ztg.enums.IsDeleteEnum;
 import com.ztg.service.RecordDetailService;
@@ -48,28 +49,37 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
     public Boolean saveOrUpdate(RecordDetailSaveVO recordDetailSaveVO) {
         Date now = DateUtil.now();
         String user = recordDetailSaveVO.getUser();
-        RecordDetail one = this.getOne(new QueryWrapper<RecordDetail>().lambda()
-                .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
-                .eq(RecordDetail::getRecordId, recordDetailSaveVO.getRecordId())
-                .orderByDesc(RecordDetail::getId), false
-        );
-        int group = 1;
-        if (one != null) {
-            group = one.getGroupNo() + 1;
+        if (recordDetailSaveVO.getGroupNo() != null) { // 编辑只修改金额，不修改其他
+
+        } else { // TODO
+
         }
-        List<RecordDetail> recordDetailList = Lists.newArrayList();
-        for (RecordDetailVO recordDetailVO : recordDetailSaveVO.getRecordDetailList()) {
-            RecordDetail recordDetail = new RecordDetail();
-            BeanUtil.copyProperties(recordDetailVO, recordDetail);
-            recordDetail.setGroupNo(group);
-            recordDetail.setCreator(user);
-            recordDetail.setModifier(user);
-            recordDetail.setGmtCreate(now);
-            recordDetail.setGmtModified(now);
-            recordDetail.setRecordId(recordDetailSaveVO.getRecordId());
-            recordDetailList.add(recordDetail);
+        if (recordDetailSaveVO.getGroupNo() == null) {
+            RecordDetail one = this.getOne(new QueryWrapper<RecordDetail>().lambda()
+                    .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
+                    .eq(RecordDetail::getRecordId, recordDetailSaveVO.getRecordId())
+                    .orderByDesc(RecordDetail::getId), false
+            );
+            int group = 1;
+            if (one != null) {
+                group = one.getGroupNo() + 1;
+            }
+
+            List<RecordDetail> recordDetailList = Lists.newArrayList();
+            for (RecordDetailVO recordDetailVO : recordDetailSaveVO.getRecordDetailList()) {
+                RecordDetail recordDetail = new RecordDetail();
+                BeanUtil.copyProperties(recordDetailVO, recordDetail);
+                recordDetail.setGroupNo(group);
+                recordDetail.setCreator(user);
+                recordDetail.setModifier(user);
+                recordDetail.setGmtCreate(now);
+                recordDetail.setGmtModified(now);
+                recordDetail.setRecordId(recordDetailSaveVO.getRecordId());
+                recordDetailList.add(recordDetail);
+            }
+            return recordDetailService.saveBatch(recordDetailList);
         }
-        return recordDetailService.saveBatch(recordDetailList);
+        return false;
     }
 
     /**
@@ -78,11 +88,8 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
      * @param recordDetailGetVO
      * @return
      */
-    public RecordDetail getById(RecordDetailGetVO recordDetailGetVO) {
-        return this.getOne(new QueryWrapper<RecordDetail>().lambda()
-                .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
-                .eq(RecordDetail::getId, recordDetailGetVO.getId())
-        );
+    public List<RecordDetailDTO> getByRecordAndGroupFac(RecordDetailGetVO recordDetailGetVO) {
+        return this.getByRecordAndGroup(recordDetailGetVO);
     }
 
 
@@ -92,8 +99,8 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
      * @param recordDetailPageVO
      * @return
      */
-    public IPage<RecordDetailDTO> getPageFac(RecordDetailPageVO recordDetailPageVO) {
-        IPage<RecordDetailDTO> recordDTOPageList = getPage(recordDetailPageVO);
+    public IPage<RecordDetailGroupDTO> getPageFac(RecordDetailPageVO recordDetailPageVO) {
+        IPage<RecordDetailGroupDTO> recordDTOPageList = getPage(recordDetailPageVO);
         return recordDTOPageList;
     }
 

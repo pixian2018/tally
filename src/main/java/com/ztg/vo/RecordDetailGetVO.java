@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 public class RecordDetailGetVO {
 
-    /**
-     * 主键
-     */
-    private Long id;
+    // 场次id
+    private Long recordId;
+    // 分组
+    private Integer groupNo;
 }

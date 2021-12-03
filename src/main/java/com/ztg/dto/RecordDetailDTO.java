@@ -1,6 +1,5 @@
 package com.ztg.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,29 +15,12 @@ import java.math.BigDecimal;
 @Data
 public class RecordDetailDTO {
 
-
-    /**
-     *
-     */
-    // 主键
+    // 明细id
     private Long id;
-
-    /**
-     * 场次id
-     */
-    @TableField("record_id")
-    private Long recordId;
-
-    /**
-     * 玩家id
-     */
-    @TableField("player_id")
+    // 玩家id
     private Long playerId;
-
-    /**
-     * 金额
-     */
-    @TableField("money")
+    // 玩家名称
+    private String name;
+    // 金额
     private BigDecimal money;
-
 }

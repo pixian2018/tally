@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 @Setter
 public class RecordDetailVO {
 
+    // 明细id
+    private Long id;
     // 玩家id
     private Long playerId;
     // 金额

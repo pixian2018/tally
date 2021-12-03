@@ -4,7 +4,7 @@ package com.ztg.web;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ztg.common.RespDTO;
 import com.ztg.dto.RecordDetailDTO;
-import com.ztg.entity.RecordDetail;
+import com.ztg.dto.RecordDetailGroupDTO;
 import com.ztg.facade.RecordDetailFacade;
 import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -34,11 +36,19 @@ public class RecordDetailController {
     @Autowired
     RecordDetailFacade recordDetailFacade;
 
+    @ApiOperation(value = "分页API[zhoutg]",
+            notes = "分页API")
+    @PostMapping("/page")
+    public RespDTO<IPage<RecordDetailGroupDTO>> page(@RequestBody RecordDetailPageVO recordDetailPageVO) {
+        IPage<RecordDetailGroupDTO> data = recordDetailFacade.getPageFac(recordDetailPageVO);
+        return RespDTO.onSuc(data);
+    }
+
     @ApiOperation(value = "获取API[zhoutg]",
             notes = "")
-    @PostMapping("/getById")
-    public RespDTO<RecordDetail> getById(@RequestBody RecordDetailGetVO recordDetailGetVO) {
-        RecordDetail data = recordDetailFacade.getById(recordDetailGetVO);
+    @PostMapping("/getByRecordAndGroup")
+    public RespDTO<List<RecordDetailDTO>> getByRecordAndGroup(@RequestBody RecordDetailGetVO recordDetailGetVO) {
+        List<RecordDetailDTO> data = recordDetailFacade.getByRecordAndGroupFac(recordDetailGetVO);
         return RespDTO.onSuc(data);
     }
 
@@ -48,14 +58,6 @@ public class RecordDetailController {
     public RespDTO<Boolean> saveOrUpdate(@RequestBody RecordDetailSaveVO recordDetailSaveVO) {
         recordDetailFacade.saveOrUpdate(recordDetailSaveVO);
         return RespDTO.onSuc(true);
-    }
-
-    @ApiOperation(value = "分页API[zhoutg]",
-            notes = "分页API")
-    @PostMapping("/page")
-    public RespDTO<IPage<RecordDetailDTO>> page(@RequestBody RecordDetailPageVO recordDetailPageVO) {
-        IPage<RecordDetailDTO> data = recordDetailFacade.getPageFac(recordDetailPageVO);
-        return RespDTO.onSuc(data);
     }
 
     @ApiOperation(value = "删除API[zhoutg]",
