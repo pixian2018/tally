@@ -7,6 +7,7 @@ import com.ztg.common.exception.CommonErrorCode;
 import com.ztg.common.exception.CommonException;
 import com.ztg.dto.RecordDetailDTO;
 import com.ztg.dto.RecordDetailGroupDTO;
+import com.ztg.dto.RecordDetailWinDTO;
 import com.ztg.dto.RecordSettleDTO;
 import com.ztg.entity.RecordDetail;
 import com.ztg.entity.RecordPlayer;
@@ -17,11 +18,13 @@ import com.ztg.util.BeanUtil;
 import com.ztg.util.DateUtil;
 import com.ztg.util.EntityUtil;
 import com.ztg.util.ExtUtil;
+import com.ztg.util.ListUtil;
 import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
 import com.ztg.vo.RecordDetailPageVO;
 import com.ztg.vo.RecordDetailSaveVO;
 import com.ztg.vo.RecordDetailVO;
+import com.ztg.vo.RecordDetailWinVO;
 import com.ztg.vo.RecordSettleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -116,6 +119,24 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
      */
     public IPage<RecordDetailGroupDTO> getPageFac(RecordDetailPageVO recordDetailPageVO) {
         IPage<RecordDetailGroupDTO> recordDTOPageList = getPage(recordDetailPageVO);
+        List<RecordDetailGroupDTO> records = recordDTOPageList.getRecords();
+        // 获取赢家和金额
+        if (ListUtil.isNotEmpty(records)) {
+            Long recordId = records.get(0).getRecordId();
+            List<Integer> groupNoList = records.stream().map(r -> r.getGroupNo()).collect(Collectors.toList());
+            RecordDetailWinVO recordDetailWinVO = new RecordDetailWinVO();
+            recordDetailWinVO.setRecordId(recordId);
+            recordDetailWinVO.setGroupNoList(groupNoList);
+            List<RecordDetailWinDTO> winPlayer = this.getWinPlayer(recordDetailWinVO);
+            Map<Integer, RecordDetailWinDTO> groupNoMap = ExtUtil.getKeyObject(winPlayer, "groupNo");
+            for (RecordDetailGroupDTO record : records) {
+                RecordDetailWinDTO recordDetailWinDTO = groupNoMap.get(record.getGroupNo());
+                if (recordDetailWinDTO != null) {
+                    record.setPlayerName(recordDetailWinDTO.getPlayerName());
+                    record.setMoney(recordDetailWinDTO.getMoney());
+                }
+            }
+        }
         return recordDTOPageList;
     }
 
@@ -144,6 +165,9 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
                 .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
                 .eq(RecordDetail::getRecordId, recordSettleVO.getRecordId())
         );
+        if (ListUtil.isEmpty(detailList)) {
+            return Lists.newArrayList();
+        }
         Map<Long, List<RecordDetail>> detailMap = EntityUtil.makeEntityListMap(detailList, "playerId");
          List<RecordPlayer> playerList = recordPlayerFacade.list(new QueryWrapper<RecordPlayer>().lambda()
                 .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())

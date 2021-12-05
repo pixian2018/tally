@@ -58,4 +58,26 @@
             a.id ASC
     </select>
 
+    <select id="getWinPlayer" resultType="com.ztg.dto.RecordDetailWinDTO">
+        SELECT
+            a.group_no,
+            a.player_id,
+            a.money,
+            b.`name` player_name
+        FROM
+            `record_detail` a,
+            record_player b
+        WHERE
+            a.is_deleted = 'N'
+          AND b.is_deleted = 'N'
+          AND a.record_id = b.record_id
+          AND a.player_id = b.id
+          AND a.money > 0.0
+          AND a.record_id = #{recordId}
+          AND a.group_no in
+            <foreach collection="groupNoList" item="item" open="(" close=")" separator=",">
+               #{item}
+            </foreach>
+    </select>
+
 </mapper>

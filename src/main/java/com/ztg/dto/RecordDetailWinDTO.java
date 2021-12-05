@@ -1,11 +1,8 @@
 package com.ztg.dto;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * <p>
@@ -16,15 +13,12 @@ import java.util.Date;
  * @since 2021-11-29
  */
 @Data
-public class RecordDetailGroupDTO {
+public class RecordDetailWinDTO {
 
-    // 修改时间
-    @JsonFormat(pattern = "HH:mm:ss")
-    private Date gmtModified;
-    // 分组
+    // 组号
     private Integer groupNo;
-    // 场次id
-    private Long recordId;
+    // 玩家id
+    private Long playerId;
     // 玩家名称
     private String playerName;
     // 金额
