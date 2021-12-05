@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ztg.common.RespDTO;
 import com.ztg.dto.RecordDetailDTO;
 import com.ztg.dto.RecordDetailGroupDTO;
+import com.ztg.dto.RecordSettleDTO;
 import com.ztg.facade.RecordDetailFacade;
 import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
@@ -72,8 +73,8 @@ public class RecordDetailController {
     @ApiOperation(value = "结账API[zhoutg]",
             notes = "API")
     @PostMapping("/settle")
-    public RespDTO<Boolean> settle(@RequestBody RecordSettleVO recordSettleVO) {
-        // Boolean data = recordDetailFacade.delete(recordDetailDelVO);
-        return RespDTO.onSuc(null);
+    public RespDTO<List<RecordSettleDTO>> settle(@RequestBody RecordSettleVO recordSettleVO) {
+        List<RecordSettleDTO> data = recordDetailFacade.settle(recordSettleVO);
+        return RespDTO.onSuc(data);
     }
 }

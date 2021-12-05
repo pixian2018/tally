@@ -7,12 +7,16 @@ import com.ztg.common.exception.CommonErrorCode;
 import com.ztg.common.exception.CommonException;
 import com.ztg.dto.RecordDetailDTO;
 import com.ztg.dto.RecordDetailGroupDTO;
+import com.ztg.dto.RecordSettleDTO;
 import com.ztg.entity.RecordDetail;
+import com.ztg.entity.RecordPlayer;
 import com.ztg.enums.IsDeleteEnum;
 import com.ztg.service.RecordDetailService;
 import com.ztg.service.impl.RecordDetailServiceImpl;
 import com.ztg.util.BeanUtil;
 import com.ztg.util.DateUtil;
+import com.ztg.util.EntityUtil;
+import com.ztg.util.ExtUtil;
 import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
 import com.ztg.vo.RecordDetailPageVO;
@@ -44,6 +48,8 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
     @Autowired
     @Qualifier("recordDetailServiceImpl")
     RecordDetailService recordDetailService;
+    @Autowired
+    RecordPlayerFacade recordPlayerFacade;
 
     /**
      * 保存
@@ -133,13 +139,32 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
      *
      * @param recordSettleVO
      */
-    public Boolean settle(RecordSettleVO recordSettleVO) {
+    public List<RecordSettleDTO> settle(RecordSettleVO recordSettleVO) {
         List<RecordDetail> detailList = this.list(new QueryWrapper<RecordDetail>().lambda()
                 .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
                 .eq(RecordDetail::getRecordId, recordSettleVO.getRecordId())
         );
-
-        return null;
+        Map<Long, List<RecordDetail>> detailMap = EntityUtil.makeEntityListMap(detailList, "playerId");
+         List<RecordPlayer> playerList = recordPlayerFacade.list(new QueryWrapper<RecordPlayer>().lambda()
+                .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordPlayer::getRecordId, recordSettleVO.getRecordId())
+                .in(RecordPlayer::getId, detailMap.keySet())
+        );
+        Map<Long, String> playerMap = ExtUtil.getKeyValue(playerList, "id", "name");
+        List<RecordSettleDTO> recordSettleDTOList = Lists.newArrayList();
+        for (Long id : detailMap.keySet()) {
+            BigDecimal bigDecimal = new BigDecimal(0);
+            List<RecordDetail> recordDetails = detailMap.get(id);
+            for (RecordDetail recordDetail : recordDetails) {
+                bigDecimal = bigDecimal.add(recordDetail.getMoney());
+            }
+            RecordSettleDTO recordSettleDTO = new RecordSettleDTO();
+            recordSettleDTO.setMoney(bigDecimal);
+            recordSettleDTO.setPlayerId(id);
+            recordSettleDTO.setName(playerMap.get(id));
+            recordSettleDTOList.add(recordSettleDTO);
+        }
+        return recordSettleDTOList;
     }
 
 }

@@ -23,15 +23,16 @@ public class ExtUtil {
      *
      * @param list
      * @param property
+     * @param <K>
      * @param <V>
      * @return
      */
-    public static <V> Map<String, List<V>> getKeyList(List<V> list, String property) {
+    public static <K, V> Map<K, List<V>> getKeyList(List<V> list, String property) {
         if (ListUtil.isEmpty(list)) {
             return new LinkedHashMap<>();
         }
         return list.stream().collect(
-                Collectors.groupingBy(k -> ReflectUtil.getProperty(k, property)));
+                Collectors.groupingBy(r -> ReflectUtil.getProperty(r, property), LinkedHashMap::new, Collectors.toList()));
     }
 
     /**
@@ -39,22 +40,23 @@ public class ExtUtil {
      *
      * @param list
      * @param property
+     * @param <K>
      * @param <V>
      * @return
      */
-    public static <V> Map<String, V> getKeyObject(List<V> list, String property) {
+    public static <K, V> Map<K, V> getKeyObject(List<V> list, String property) {
         if (ListUtil.isEmpty(list)) {
             return new LinkedHashMap<>();
         }
         return list.stream().collect(
-                Collectors.toMap(k -> ReflectUtil.getProperty(k, property), v -> v, (v1, v2) -> (v2)));
+                Collectors.toMap(k -> ReflectUtil.getProperty(k, property), v -> v, (v1, v2) -> (v2), LinkedHashMap::new));
     }
 
     /**
      * 以Map<key, V> 形式返回，如果key相同，会覆盖前面的内容
      *
-     * @param list 列表
-     * @param splitSmybool key分隔符
+     * @param list          列表
+     * @param splitSmybool  key分隔符
      * @param multiProperty 多个属性
      * @param <V>
      * @return
@@ -64,19 +66,19 @@ public class ExtUtil {
             return new LinkedHashMap<>();
         }
         return list.stream().collect(Collectors.toMap(k -> {
-            List<String> key = Lists.newArrayList();
+            List<String> keyList = Lists.newArrayList();
             for (String property : multiProperty) {
-                key.add(ReflectUtil.getProperty(k, property));
+                keyList.add(ReflectUtil.getProperty(k, property));
             }
-            return StringUtils.join(key, splitSmybool);
-        }, v -> v, (v1, v2) -> (v2)));
+            return StringUtils.join(keyList, splitSmybool);
+        }, v -> v, (v1, v2) -> (v2), LinkedHashMap::new));
     }
 
     /**
      * 以Map<key, List<V>> 形式返回
      *
-     * @param list 列表
-     * @param splitSmybool key分隔符
+     * @param list          列表
+     * @param splitSmybool  key分隔符
      * @param multiProperty 多个属性
      * @param <V>
      * @return
@@ -86,12 +88,12 @@ public class ExtUtil {
             return new LinkedHashMap<>();
         }
         return list.stream().collect(Collectors.groupingBy(k -> {
-            List<String> key = Lists.newArrayList();
+            List<String> keyList = Lists.newArrayList();
             for (String property : multiProperty) {
-                key.add(ReflectUtil.getProperty(k, property));
+                keyList.add(ReflectUtil.getProperty(k, property));
             }
-            return StringUtils.join(key, splitSmybool);
-        }));
+            return StringUtils.join(keyList, splitSmybool);
+        }, LinkedHashMap::new, Collectors.toList()));
     }
 
     /**
@@ -101,15 +103,35 @@ public class ExtUtil {
      * @param keyProperty
      * @param valueProperty
      * @param <K>
+     * @param <R>
      * @param <V>
      * @return
      */
-    public static <K, V> Map<K, V> getKeyValue(List<V> list, String keyProperty, String valueProperty) {
+    public static <K, R, V> Map<K, R> getKeyValue(List<V> list, String keyProperty, String valueProperty) {
         if (ListUtil.isEmpty(list)) {
             return new LinkedHashMap<>();
         }
         return list.stream().collect(Collectors.toMap(k -> ReflectUtil.getProperty(k, keyProperty),
-                v -> ReflectUtil.getProperty(v, valueProperty), (v1, v2) -> (v2)));
+                v -> ReflectUtil.getProperty(v, valueProperty), (v1, v2) -> (v2), LinkedHashMap::new));
+    }
+
+    /**
+     * 以Map形式返回所有的key，值固定
+     *
+     * @param list
+     * @param keyProperty
+     * @param r
+     * @param <K>
+     * @param <R>
+     * @param <V>
+     * @return
+     */
+    public static <K, R, V> Map<K, R> getKeyMap(List<V> list, String keyProperty, R r) {
+        if (ListUtil.isEmpty(list)) {
+            return new LinkedHashMap<>();
+        }
+        return list.stream().collect(Collectors.toMap(k -> ReflectUtil.getProperty(k, keyProperty),
+                v -> r, (v1, v2) -> (v2), LinkedHashMap::new));
     }
 
     /**
@@ -216,6 +238,7 @@ public class ExtUtil {
     }
 
     public static void main(String[] args) {
+
 
     }
 }
