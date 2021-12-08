@@ -1,4 +1,4 @@
-use `wx`;
+use `tally`;
 
 drop TABLE if EXISTS `record`;
 CREATE TABLE `record` (

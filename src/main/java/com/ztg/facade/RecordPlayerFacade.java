@@ -49,7 +49,7 @@ public class RecordPlayerFacade extends RecordPlayerServiceImpl {
     public Boolean saveOrUpdate(RecordPlayerSaveVO recordPlayerSaveVO) {
         List<RecordPlayerVO> recordPlayerVOList = recordPlayerSaveVO.getRecordPlayerVOList();
         if (ListUtil.isEmpty(recordPlayerVOList)) {
-            throw new CommonException(CommonErrorCode.SERVER_IS_ERROR, "人员不能为空！");
+            throw new CommonException(CommonErrorCode.SERVER_IS_ERROR, "人员为空，请重新输入");
         }
         List<RecordPlayer> recordPlayerList = Lists.newArrayList();
         Date now = DateUtil.now();
