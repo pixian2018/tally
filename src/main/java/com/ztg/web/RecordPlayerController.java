@@ -4,6 +4,7 @@ package com.ztg.web;
 import com.ztg.common.RespDTO;
 import com.ztg.entity.RecordPlayer;
 import com.ztg.facade.RecordPlayerFacade;
+import com.ztg.vo.RecordOrPlayerVO;
 import com.ztg.vo.RecordPlayerDeleteVO;
 import com.ztg.vo.RecordPlayerGetVO;
 import com.ztg.vo.RecordPlayerSaveVO;
@@ -64,6 +65,14 @@ public class RecordPlayerController {
     @PostMapping("/getJoinCount")
     public RespDTO<Long> getJoinCount(@RequestBody RecordPlayerGetVO recordPlayerGetVO) {
         Long data = recordPlayerFacade.getJoinCount(recordPlayerGetVO);
+        return RespDTO.onSuc(data);
+    }
+
+    @ApiOperation(value = "是否有记录或人员API[zhoutg]",
+            notes = "recordId：场次id")
+    @PostMapping("/hasRecordOrPlayer")
+    public RespDTO<Boolean> hasRecordOrPlayer(@RequestBody RecordOrPlayerVO recordOrPlayerVO) {
+        Boolean data = recordPlayerFacade.hasRecordOrPlayer(recordOrPlayerVO);
         return RespDTO.onSuc(data);
     }
 

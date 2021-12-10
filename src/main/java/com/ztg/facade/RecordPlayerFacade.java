@@ -12,6 +12,7 @@ import com.ztg.service.impl.RecordPlayerServiceImpl;
 import com.ztg.util.BeanUtil;
 import com.ztg.util.DateUtil;
 import com.ztg.util.ListUtil;
+import com.ztg.vo.RecordOrPlayerVO;
 import com.ztg.vo.RecordPlayerDeleteVO;
 import com.ztg.vo.RecordPlayerGetVO;
 import com.ztg.vo.RecordPlayerSaveVO;
@@ -112,6 +113,32 @@ public class RecordPlayerFacade extends RecordPlayerServiceImpl {
                 .eq(RecordPlayer::getIsJoin, 1)
         );
     }
+
+    /**
+     * 是否有记录或人员
+     *
+     * @param recordOrPlayerVO
+     * @return
+     */
+    public Boolean hasRecordOrPlayer(RecordOrPlayerVO recordOrPlayerVO) {
+        Long detailCount = recordDetailFacade.count(new QueryWrapper<RecordDetail>().lambda()
+                .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordDetail::getRecordId, recordOrPlayerVO.getRecordId())
+        );
+        if (detailCount > 0) {
+            return true;
+        }
+        Long playerCount = this.count(new QueryWrapper<RecordPlayer>().lambda()
+                .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordPlayer::getRecordId, recordOrPlayerVO.getRecordId())
+        );
+        if (playerCount > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
 
 
     /**
