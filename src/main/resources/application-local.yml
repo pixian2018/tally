@@ -1,6 +1,8 @@
 server:
   port: 8001
   max-http-header-size: 10MB #head传值大小
+  servlet:
+    context-path: /tally
 
 spring:
   # 驱动配置信息

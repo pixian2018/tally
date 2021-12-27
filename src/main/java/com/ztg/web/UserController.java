@@ -35,4 +35,11 @@ public class UserController {
         JSONObject data = userFacade.decodeUser(userDecodeVO);
         return RespDTO.onSuc(data);
     }
+
+    @ApiOperation(value = "测试API[zhoutg]",
+            notes = "测试API")
+    @RequestMapping("/test")
+    public RespDTO<Object> test() {
+        return RespDTO.onSuc("ok");
+    }
 }
