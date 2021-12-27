@@ -10,7 +10,5 @@ import lombok.Data;
 @Data
 public class UserDecodeVO {
 
-    private String encryptedData;
-    private String sessionKey;
-    private String iv;
+    private String code;
 }

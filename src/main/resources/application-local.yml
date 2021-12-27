@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 9001
   max-http-header-size: 10MB #head传值大小
   servlet:
     context-path: /tally
@@ -106,3 +106,7 @@ mybatis-plus:
 # 是否开启swagger调用
 swagger:
   enable: true
+
+tally:
+  appid: wxd439ab76f2d19d3c
+  secret: c24910ebb42baf65b971925083a455d2

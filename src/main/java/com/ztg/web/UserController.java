@@ -1,7 +1,7 @@
 package com.ztg.web;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ztg.common.RespDTO;
+import com.ztg.dto.OpenidDTO;
 import com.ztg.facade.UserFacade;
 import com.ztg.vo.UserDecodeVO;
 import io.swagger.annotations.Api;
@@ -31,8 +31,8 @@ public class UserController {
     @ApiOperation(value = "解密API[zhoutg]",
             notes = "解密API")
     @PostMapping("/decodeUser")
-    public RespDTO<JSONObject> decodeUser(@RequestBody UserDecodeVO userDecodeVO) {
-        JSONObject data = userFacade.decodeUser(userDecodeVO);
+    public RespDTO<OpenidDTO> decodeUser(@RequestBody UserDecodeVO userDecodeVO) {
+        OpenidDTO data = userFacade.decodeUser(userDecodeVO);
         return RespDTO.onSuc(data);
     }
 
