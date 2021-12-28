@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * <p>
  * 用户表 前端控制器
@@ -28,11 +30,11 @@ public class UserController {
     @Autowired
     UserFacade userFacade;
 
-    @ApiOperation(value = "解密API[zhoutg]",
-            notes = "解密API")
-    @PostMapping("/decodeUser")
-    public RespDTO<OpenidDTO> decodeUser(@RequestBody UserDecodeVO userDecodeVO) {
-        OpenidDTO data = userFacade.decodeUser(userDecodeVO);
+    @ApiOperation(value = "获取用户唯一标识openid[zhoutg]",
+            notes = "code: 登录凭证")
+    @PostMapping("/getOpenId")
+    public RespDTO<OpenidDTO> getOpenId(@Valid @RequestBody UserDecodeVO userDecodeVO) {
+        OpenidDTO data = userFacade.getOpenId(userDecodeVO);
         return RespDTO.onSuc(data);
     }
 

@@ -195,11 +195,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!--小程序解码-->
+        <!--http忽略证书-->
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.59</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
         </dependency>
 
         <!--rabbitmq-->
