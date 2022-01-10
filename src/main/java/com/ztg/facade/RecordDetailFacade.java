@@ -9,6 +9,8 @@ import com.ztg.dto.RecordDetailDTO;
 import com.ztg.dto.RecordDetailGroupDTO;
 import com.ztg.dto.RecordDetailWinDTO;
 import com.ztg.dto.RecordSettleDTO;
+import com.ztg.dto.RecordTrendDTO;
+import com.ztg.dto.RecordTrendPlayerDTO;
 import com.ztg.entity.RecordDetail;
 import com.ztg.entity.RecordPlayer;
 import com.ztg.enums.IsDeleteEnum;
@@ -31,7 +33,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -189,6 +193,83 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
             recordSettleDTOList.add(recordSettleDTO);
         }
         return recordSettleDTOList;
+    }
+
+    /**
+     * 走势图
+     *
+     * @param recordSettleVO
+     */
+    public RecordTrendDTO trend(RecordSettleVO recordSettleVO) {
+        RecordTrendDTO recordTrendDTO = new RecordTrendDTO();
+        List<RecordTrendPlayerDTO> playerList = Lists.newArrayList();
+        recordTrendDTO.setPlayerList(playerList);
+        List<RecordDetail> detailList = this.list(new QueryWrapper<RecordDetail>().lambda()
+                .eq(RecordDetail::getIsDeleted, IsDeleteEnum.N.getKey())
+                .eq(RecordDetail::getRecordId, recordSettleVO.getRecordId())
+        );
+        if (ListUtil.isEmpty(detailList)) {
+            return recordTrendDTO;
+        }
+        // 玩家走势数据
+        Map<Long, List<BigDecimal>> trendMap = new LinkedHashMap<>();
+
+        // 时间轴数据列表
+        List<String> dateList = Lists.newArrayList();
+        for (RecordDetail recordDetail : detailList) {
+            String modDate = DateUtil.format(recordDetail.getGmtModified(), "HH:mm");
+            if (!dateList.contains(modDate)) {
+                dateList.add(modDate);
+            }
+            if (trendMap.get(recordDetail.getPlayerId()) == null) {
+                trendMap.put(recordDetail.getPlayerId(), new ArrayList<>());
+            }
+        }
+        recordTrendDTO.setDateList(dateList);
+
+        Map<Date, List<RecordDetail>> modifiedMap = ExtUtil.getKeyList(detailList, "gmtModified");
+        int i = 0;
+        for (Date date : modifiedMap.keySet()) {
+            List<RecordDetail> recordDetails = modifiedMap.get(date);
+            for (RecordDetail recordDetail : recordDetails) {
+                List<BigDecimal> bigDecimalList = trendMap.get(recordDetail.getPlayerId());
+                BigDecimal money = recordDetail.getMoney();
+                if (ListUtil.isEmpty(bigDecimalList)) {
+                    List<BigDecimal> bigList = new ArrayList<>();
+                    bigList.add(money);
+                    trendMap.put(recordDetail.getPlayerId(), bigList);
+                } else {
+                    bigDecimalList.add(bigDecimalList.get(bigDecimalList.size() - 1).add(money));
+                }
+            }
+            i++;
+
+            // 未参与的对当前数据赋值，值为最后一个数据
+            for (Long aLong : trendMap.keySet()) {
+                if (trendMap.get(aLong).size() < i) {
+                    if (i == 1) {
+                        trendMap.get(aLong).add(new BigDecimal(0));
+                    } else {
+                        trendMap.get(aLong).add(trendMap.get(aLong).get(i - 2));
+                    }
+                }
+            }
+        }
+
+        // 输出结果
+        List<RecordPlayer> playerNameList = recordPlayerFacade.list(new QueryWrapper<RecordPlayer>().lambda()
+                .eq(RecordPlayer::getIsDeleted, IsDeleteEnum.N.getKey())
+                .in(RecordPlayer::getId, trendMap.keySet())
+        );
+        Map<Long, String> playerMap = ExtUtil.getKeyValue(playerNameList, "id", "name");
+        for (Long aLong : trendMap.keySet()) {
+            RecordTrendPlayerDTO recordTrendPlayerDTO = new RecordTrendPlayerDTO();
+            recordTrendPlayerDTO.setPlayerId(aLong);
+            recordTrendPlayerDTO.setName(playerMap.get((aLong)));
+            recordTrendPlayerDTO.setMoneyList(trendMap.get(aLong));
+            playerList.add(recordTrendPlayerDTO);
+        }
+        return recordTrendDTO;
     }
 
 }

@@ -6,6 +6,7 @@ import com.ztg.common.RespDTO;
 import com.ztg.dto.RecordDetailDTO;
 import com.ztg.dto.RecordDetailGroupDTO;
 import com.ztg.dto.RecordSettleDTO;
+import com.ztg.dto.RecordTrendDTO;
 import com.ztg.facade.RecordDetailFacade;
 import com.ztg.vo.RecordDetailDelVO;
 import com.ztg.vo.RecordDetailGetVO;
@@ -71,10 +72,18 @@ public class RecordDetailController {
     }
 
     @ApiOperation(value = "结账API[zhoutg]",
-            notes = "API")
+            notes = "结账API")
     @PostMapping("/settle")
     public RespDTO<List<RecordSettleDTO>> settle(@RequestBody RecordSettleVO recordSettleVO) {
         List<RecordSettleDTO> data = recordDetailFacade.settle(recordSettleVO);
+        return RespDTO.onSuc(data);
+    }
+
+    @ApiOperation(value = "走势图API[zhoutg]",
+            notes = "走势图API")
+    @PostMapping("/trend")
+    public RespDTO<RecordTrendDTO> trend(@RequestBody RecordSettleVO recordSettleVO) {
+        RecordTrendDTO data = recordDetailFacade.trend(recordSettleVO);
         return RespDTO.onSuc(data);
     }
 }
