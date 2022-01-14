@@ -216,9 +216,13 @@ public class RecordDetailFacade extends RecordDetailServiceImpl {
 
         // 时间轴数据列表
         List<String> dateList = Lists.newArrayList();
+        // 修改时间列表数据，用来获取时间轴数据
+        List<String> modifiedList = Lists.newArrayList();
         for (RecordDetail recordDetail : detailList) {
-            String modDate = DateUtil.format(recordDetail.getGmtModified(), "HH:mm");
-            if (!dateList.contains(modDate)) {
+            String modifiedDate = DateUtil.formatDateTime(recordDetail.getGmtModified());
+            if (!modifiedList.contains(modifiedDate)) {
+                modifiedList.add(modifiedDate);
+                String modDate = DateUtil.format(recordDetail.getGmtModified(), "HH:mm");
                 dateList.add(modDate);
             }
             if (trendMap.get(recordDetail.getPlayerId()) == null) {
