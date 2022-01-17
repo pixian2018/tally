@@ -4,16 +4,16 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.ztg.entity.RecordDetail">
-        <id column="id" property="id" />
-        <result column="is_deleted" property="isDeleted" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="creator" property="creator" />
-        <result column="modifier" property="modifier" />
-        <result column="record_id" property="recordId" />
-        <result column="group_no" property="groupNo" />
-        <result column="player_id" property="playerId" />
-        <result column="money" property="money" />
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="record_id" property="recordId"/>
+        <result column="group_no" property="groupNo"/>
+        <result column="player_id" property="playerId"/>
+        <result column="money" property="money"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -22,63 +22,69 @@
     </sql>
 
     <select id="getPage" resultType="com.ztg.dto.RecordDetailGroupDTO">
-        select * from (
-        SELECT
-            gmt_modified,
-            group_no,
-            record_id
-        FROM
-            record_detail
-        WHERE
-            is_deleted = 'N'
-        AND record_id = #{recordId}
-        GROUP BY
-            group_no,
-            record_id,
-            gmt_modified) t
-        order by t.gmt_modified desc
-    </select>
-
-    <select id="getByRecordAndGroup" resultType="com.ztg.dto.RecordDetailDTO">
-        SELECT
-            b.`name`,
-            a.money,
-            a.player_id,
-            a.id
-        FROM
-            record_detail a,
-            record_player b
-        WHERE
-            a.is_deleted = 'N'
-          AND b.is_deleted = 'N'
-          AND a.player_id = b.id
-          AND a.record_id = #{recordId}
-          AND a.group_no = #{groupNo}
-        ORDER BY
-            a.id ASC
-    </select>
-
-    <select id="getWinPlayer" resultType="com.ztg.dto.RecordDetailWinDTO">
         SELECT
             a.group_no,
-            a.player_id,
-            a.money,
-            b.`name` player_name
+            a.gmt_modified,
+            a.record_id,
+            sum(a.money) money,
+            GROUP_CONCAT(b. NAME) player_name
         FROM
             `record_detail` a,
             record_player b
         WHERE
             a.is_deleted = 'N'
+            AND b.is_deleted = 'N'
+            AND a.record_id = b.record_id
+            AND a.player_id = b.id
+            AND a.money > 0.0
+            AND a.record_id = #{recordId}
+        GROUP BY
+            a.group_no,
+            a.gmt_modified,
+            a.record_id
+        ORDER BY
+            a.group_no DESC
+    </select>
+
+    <select id="getByRecordAndGroup" resultType="com.ztg.dto.RecordDetailDTO">
+        SELECT b.`name`,
+               a.money,
+               a.player_id,
+               a.id
+        FROM record_detail a,
+             record_player b
+        WHERE a.is_deleted = 'N'
           AND b.is_deleted = 'N'
-          AND a.record_id = b.record_id
           AND a.player_id = b.id
-          AND a.money >= 0.0
           AND a.record_id = #{recordId}
-          AND a.group_no in
-            <foreach collection="groupNoList" item="item" open="(" close=")" separator=",">
-               #{item}
-            </foreach>
-        order by a.group_no, money
+          AND a.group_no = #{groupNo}
+        ORDER BY a.id ASC
+    </select>
+
+    <select id="getWinPlayer" resultType="com.ztg.dto.RecordDetailWinDTO">
+        SELECT
+            a.group_no,
+            a.gmt_modified,
+            sum(a.money) money,
+            GROUP_CONCAT(b. NAME) player_name
+        FROM
+            `record_detail` a,
+            record_player b
+        WHERE
+        a.is_deleted = 'N'
+        AND b.is_deleted = 'N'
+        AND a.record_id = b.record_id
+        AND a.player_id = b.id
+        AND a.money >= 0.0
+        AND a.record_id = #{recordId}
+        AND a.group_no in
+        <foreach collection="groupNoList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        GROUP BY
+            a.group_no
+        ORDER BY
+            a.group_no DESC
     </select>
 
 </mapper>
