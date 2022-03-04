@@ -27,8 +27,12 @@ public class Cn2SpellUtil {
         for (int i = 0; i < nameChar.length; i++) {
             if (nameChar[i] > 128) {
                 try {
-                    pinyinName +=
-                            PinyinHelper.toHanyuPinyinStringArray(nameChar[i], defaultFormat)[0].charAt(0);
+                    String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(nameChar[i], defaultFormat);
+                    if (null != pinyinArray && pinyinArray.length > 0 && StringUtil.isNotBlank(pinyinArray[0])) {
+                        pinyinName += pinyinArray[0].charAt(0);
+                    } else {
+                        pinyinName += nameChar[i];
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -74,7 +78,12 @@ public class Cn2SpellUtil {
         for (int i = 0; i < nameChar.length; i++) {
             if (nameChar[i] > 128) {
                 try {
-                    pinyinName += PinyinHelper.toHanyuPinyinStringArray(nameChar[i], defaultFormat)[0];
+                    String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(nameChar[i], defaultFormat);
+                    if (null != pinyinArray && pinyinArray.length > 0) {
+                        pinyinName += pinyinArray[0];
+                    } else {
+                        pinyinName += nameChar[i];
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -86,8 +95,8 @@ public class Cn2SpellUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(converterToFirstSpell("欢迎来到Java世界"));
-        System.out.println(converterToSpell("欢迎来到Java世界"));
-        System.out.println(converterToSpellLow("欢迎来到Java世界"));
+        System.out.println(converterToFirstSpell("欢迎来到 βJava世界"));
+        System.out.println(converterToSpell("欢迎来到 βJava世界"));
+        System.out.println(converterToSpellLow("欢迎来到β Java世界"));
     }
 }
