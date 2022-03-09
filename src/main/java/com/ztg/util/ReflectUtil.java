@@ -3,8 +3,6 @@ package com.ztg.util;
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -132,19 +130,16 @@ public class ReflectUtil {
      */
     public <T> void sort(List<T> tList, String property) {
         if (ListUtil.isNotEmpty(tList) && tList.size() > 1) {
-            Collections.sort(tList, new Comparator<T>() {
-                @Override
-                public int compare(T o1, T o2) {
-                    String v1 = getProperty(o1, property);
-                    String v2 = getProperty(o2, property);
-                    if (StringUtil.isBlank(v1)) {
-                        return -1;
-                    }
-                    if (StringUtil.isBlank(v2)) {
-                        return 1;
-                    }
-                    return v1.compareTo(v2);
+            tList.sort((obj1, obj2) -> {
+                String v1 = getProperty(obj1, property);
+                String v2 = getProperty(obj2, property);
+                if (StringUtil.isBlank(v1)) {
+                    return -1;
                 }
+                if (StringUtil.isBlank(v2)) {
+                    return 1;
+                }
+                return v1.compareTo(v2);
             });
         }
     }
