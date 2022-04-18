@@ -5,3 +5,7 @@ spring:
     active: local
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true # facade之间可以互相引用
+  mvc: # 解决swagger报错
+    pathmatch:
+      matching-strategy: ant_path_matcher

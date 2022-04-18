@@ -53,26 +53,27 @@ spring:
         reset-enable: false
         login-username: root
         login-password: root
+        allow:  #允许其他地址可以打开监控页面
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
-  #配置rabbitMq 服务器
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
-  #配置rabbitMq 自定义消息通道
-  cloud:
-    stream:
-      bindings:
-        inputMessage: # MyMessage类中的变量值
-          destination: message   # 等同于交换器
-        outputMessage:  # MyMessage类中的变量值
-          destination: message   # 等同于交换器
+#  #配置rabbitMq 服务器
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#    virtual-host: /
+#  #配置rabbitMq 自定义消息通道
+#  cloud:
+#    stream:
+#      bindings:
+#        inputMessage: # MyMessage类中的变量值
+#          destination: message   # 等同于交换器
+#        outputMessage:  # MyMessage类中的变量值
+#          destination: message   # 等同于交换器
 
 # mybatis-plus
 mybatis-plus:
