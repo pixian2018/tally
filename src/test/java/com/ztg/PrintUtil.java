@@ -55,7 +55,7 @@ public class PrintUtil {
                 } else if (s.indexOf("//") >= 0) {
                     value = s.substring(s.indexOf("//") + 2, s.indexOf("private")).trim();
                 }
-                int index = s.indexOf("=");
+                int index = s.lastIndexOf("=");
                 if (index >= 0) { // 包含“=”，例如：// 科室列表private List<Long> deptList = Lists.newLinkedList()
                     StringBuffer keySb = new StringBuffer();
                     boolean insertflag = false; // 是否有效字符插入
